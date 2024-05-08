@@ -4,14 +4,16 @@ ring r = 0, (x,y), dp;
 poly f = (y3+x2)*(y2-x3)+y6;
 integralBasis(f,2);
 
-// Example with many branches
+// Example with many branches - Both algorithms are fast (one second)
+printlevel = 5;
 LIB"integralbasis.lib";
 ring r = 0, (x,y), dp;
 poly f = (y4+3x3y + x4)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
-list l1 = integralBasis(f,2, "opti1");
-list l2 = integralBasis(f,2, "opti0");
-reduce(l1[1], groebner(l2[1]));
-reduce(l2[1], groebner(l1[1]));
+list l1 = integralBasis(f,2, "atOrigin", "opti1");
+list l2 = integralBasis(f,2, "atOrigin", "opti0");
+// Checks
+size(reduce(l1[1], groebner(l2[1])));
+size(reduce(l2[1], groebner(l1[1])));
 
 // Merging is a little slow  -  1 vs 7
 printlevel = 5;
@@ -20,12 +22,13 @@ ring r = 0, (x,y), dp;
 poly f = (y4+3x3y + x4)*(y^7 + 6x4y3 + 2xy + x7)*(y5+7xy-4x2)*(y3+x2)*(y2-x3)+y30;
 int t = timer;
 list l1 = integralBasis(f,2, "atOrigin", "opti1");
-"opti", timer - t;
-int t = timer;
+"Time using optimization algorithm:", timer - t;
+t = timer;
 list l2 = integralBasis(f,2, "atOrigin", "opti0");
-"no opti", timer - t;
-reduce(l1[1], groebner(l2[1]));
-reduce(l2[1], groebner(l1[1]));
+"Time using Chinese remainder algorithm:", timer - t;
+// Checks
+size(reduce(l1[1], groebner(l2[1])));
+size(reduce(l2[1], groebner(l1[1])));
 
 // Merging is a little slow  -  2 vs 7
 printlevel = 5;
@@ -34,12 +37,13 @@ ring r = 0, (x,y), dp;
 poly f = (y4+3x3y + x4)*(y^7 + 6x4y3 + 2xy + x7)*(y9+7xy2-4x2)*(y3+x2)*(y2-x3)+y30;
 int t = timer;
 list l1 = integralBasis(f,2, "atOrigin", "opti1");
-"opti", timer - t;
-int t = timer;
+"Time using optimization algorithm:", timer - t;
+t = timer;
 list l2 = integralBasis(f,2, "atOrigin", "opti0");
-"no opti", timer - t;
-reduce(l1[1], groebner(l2[1]));
-reduce(l2[1], groebner(l1[1]));
+"Time using Chinese remainder algorithm:", timer - t;
+// Checks
+size(reduce(l1[1], groebner(l2[1])));
+size(reduce(l2[1], groebner(l1[1])));
 
 // Merging is pretty slow - 1 vs 198
 printlevel = 10;
@@ -48,12 +52,13 @@ ring r = 0, (x,y), dp;
 poly f = (y4+ x4)*(y^7 + 2xy + x2)*(y5+7x3)*(y3+x2)*(y3-x2)*(y2-x3)+y30;
 int t = timer;
 list l1 = integralBasis(f,2, "atOrigin", "opti1");
-"opti", timer - t;
-int t = timer;
+"Time using optimization algorithm:", timer - t;
+t = timer;
 list l2 = integralBasis(f,2, "atOrigin", "opti0");
-"no opti", timer - t;
-reduce(l1[1], groebner(l2[1]));
-reduce(l2[1], groebner(l1[1]));
+"Time using Chinese remainder algorithm:", timer - t;
+// Checks
+size(reduce(l1[1], groebner(l2[1])));
+size(reduce(l2[1], groebner(l1[1])));
 
 // Merging is very slow
 printlevel = 5;
@@ -62,12 +67,13 @@ ring r = 0, (x,y), dp;
 poly f = (y4+3x3y + x4)*(y^7 + 6x4y3 + 2xy + x7)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
 int t = timer;
 list l1 = integralBasis(f,2, "atOrigin", "opti1");
-"opti", timer - t;
-int t = timer;
+"Time using optimization algorithm:", timer - t;
+t = timer;
 list l2 = integralBasis(f,2, "atOrigin", "opti0");
-"no opti", timer - t;
-reduce(l1[1], groebner(l2[1]));
-reduce(l2[1], groebner(l1[1]));
+"Time using Chinese remainder algorithm:", timer - t;
+// Checks
+size(reduce(l1[1], groebner(l2[1])));
+size(reduce(l2[1], groebner(l1[1])));
 
 
 // Merging is very slow
@@ -77,12 +83,13 @@ ring r = 0, (x,y), dp;
 poly f = (y4+ x4)*(y^7 + 6x4y3 + 2xy + x7)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
 int t = timer;
 list l1 = integralBasis(f,2, "atOrigin", "opti1");
-"opti", timer - t;
-int t = timer;
+"Time using optimization algorithm:", timer - t;
+t = timer;
 list l2 = integralBasis(f,2, "atOrigin", "opti0");
-"no opti", timer - t;
-reduce(l1[1], groebner(l2[1]));
-reduce(l2[1], groebner(l1[1]));
+"Time using Chinese remainder algorithm:", timer - t;
+// Checks
+size(reduce(l1[1], groebner(l2[1])));
+size(reduce(l2[1], groebner(l1[1])));
 
 ///////////////////////////////////
 
@@ -95,12 +102,13 @@ ring r = 0, (x,y), dp;
 poly f = (y4+ x4)*(y^7 + 2xy + x2)*(y5+7x3)*(y3+x2)*(y3-x2)*(y2-x3)+y30;
 int t = timer;
 list l1 = integralBasis(f,2, "atOrigin", "opti1");
-"opti", timer - t;
-int t = timer;
+"Time using optimization algorithm:", timer - t;
+t = timer;
 list l2 = integralBasis(f,2, "atOrigin", "opti0");
-"no opti", timer - t;
-reduce(l1[1], groebner(l2[1]));
-reduce(l2[1], groebner(l1[1]));
+"Time using Chinese remainder algorithm:", timer - t;
+// Checks
+size(reduce(l1[1], groebner(l2[1])));
+size(reduce(l2[1], groebner(l1[1])));
 
 // Other examples
 poly f = (y4+ x4)*(y^7 + 2xy + x7)*(y2-x3)*(y3+x2)*(y3-x2)+y30;
@@ -110,11 +118,11 @@ poly f = (y4+3x3y + x4)*(y^7 + 6x4y3 + 2xy + x7)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x
 LIB"integralbasis.lib";
 ring r = 0, (x,y), dp;
 poly f = (y4+3x3y + x4)*(y5+y4x2+7x3)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
-int t = timer;
 list l1 = integralBasis(f,2, "atOrigin", "opti1");
-"opti", timer - t;
-int t = timer;
+"Time using optimization algorithm:", timer - t;
+t = timer;
 list l2 = integralBasis(f,2, "atOrigin", "opti0");
-"no opti", timer - t;
-reduce(l1[1], groebner(l2[1]));
-reduce(l2[1], groebner(l1[1]));
+"Time using Chinese remainder algorithm:", timer - t;
+// Checks
+size(reduce(l1[1], groebner(l2[1])));
+size(reduce(l2[1], groebner(l1[1])));
