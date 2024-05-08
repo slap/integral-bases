@@ -53,7 +53,7 @@ LIB "classify.lib";  // For init_debug() and debug_log() procedures
 
 proc optimAlgorithm(int n, int locBasis, int d0, int d1, intvec vxy, matrix M, list MSelf, intvec md, list classes, poly unitLiftedFull, list I2LiftedFull, matrix ordsFull, list bestElem, int optimize, list bF, list blocks)
 {
-  "START - intbasoptim.lib - optimAlgorithm - 1";  
+  //"START - intbasoptim.lib - optimAlgorithm - 1";  
   int i, j, k;
   int t = timer;
   list b;

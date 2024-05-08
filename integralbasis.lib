@@ -24,7 +24,7 @@ PROCEDURES:
 ";
 
 LIB "normal.lib";
-LIB "intbas-optimization.lib";
+LIB "intbas_optimization.lib";
 LIB "locnormal.lib";
 LIB "assprimeszerodim.lib";
 LIB "puiseuxexpansions.lib";
@@ -1099,8 +1099,8 @@ static proc ibLocal(poly f, ideal P, int locBasis, int useRotation, int optimize
     ideal ibN = ibAt0(fT, locBasis, optimize);
 
     // After ibAt0
-    "ibN = "; ibN;
-    ~;
+    //"ibN = "; ibN;
+    //~;
 
     if(size(ibN) == 0){
       return(list());
@@ -1456,9 +1456,12 @@ static proc ibAt0(poly f, int locBasis, int optimize)
   list l1, l2;
   tt = timer;
 
+  "optimize = ", optimize;
+  
   if(optimize == 0)
   {
     // No optimization. Classes are merged using Chinese remainder theorem.
+    "No optimization";
     for(i = 1; i <= nClasses; i++)
     {
       // Computing ~A(i)_new... (using modified chinese remainder)
