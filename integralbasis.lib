@@ -1847,8 +1847,8 @@ static proc locLocAlgorithm(int n, int cl, int locBasis, int d0, matrix M, list 
     expBaseFactor = 0;
   }
   
-  "before ibNum = "; ibNum;
-  ~;
+//  "before ibNum = "; ibNum;
+//  ~;
   
   // The initial element
   ibNum = ibNum + list(baseFactor);
@@ -1858,7 +1858,7 @@ static proc locLocAlgorithm(int n, int cl, int locBasis, int d0, matrix M, list 
   int eu;
   number euNum;
   
-  "ibNum = "; ibNum;
+//  "ibNum = "; ibNum;
   
   for(k = (n - md[cl] + 2); k <= n; k++)
   {
@@ -1875,8 +1875,8 @@ static proc locLocAlgorithm(int n, int cl, int locBasis, int d0, matrix M, list 
   }
   list outp = IOut, ibDen[size(ibDen)];
   
-  "CHECK HERE!";
-  ~; 
+//  "CHECK HERE!";
+//  ~; 
 
   // We can reduce modulo the denominator
   //outp[1] = reduce(outp[1], groebner(outp[2]));
