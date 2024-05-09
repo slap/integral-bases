@@ -1,0 +1,227 @@
+ring r = 0, (x,y), dp;
+poly a1 = -4x3y-2x3-2x2y-x2+xy-y-1;
+poly b1 = -4x3y2-2x3y-2x2y2-3x3-2x2y+xy2-y2-y;
+poly f1 = y3+(x3+x2)*y2+(-x2)*y+x2;
+poly f2 = y2-x3;
+
+ideal B1 = x*b1*f2, x*b1*f2*y, b1*f2*y2;
+ideal B2 = x*a1*f1, a1*f1*y;
+ideal B = x3, B1, B2;
+triangulate(B, 6);
+
+// [1]:
+//    _[1]=x3
+//    _[2]=x3y
+//    _[3]=x3y2
+//    _[4]=x3y3
+//    _[5]=4x8y3+2x8y2+10x7y3+x7y2+7x6y3+2x7y-2x6y2+3x5y3+2x7+3x6y+x5y2+4x4y3+3x6+2x4y2+2x3y3+x5-x4y+x2y3+xy4+x4+xy3+x3
+//    _[6]=-4x8y4-2x8y3-2x7y4+3x7y3+9x6y4-2x7y2+2x6y3+5x5y4-2x7y+x6y2-4x5y3+x4y4+x6y+4x5y2+x4y3+4x3y4+3x5y+2x3y3+x2y4-x3y2+xy4+y5+x3y+y4+x2y
+//    _[7]=-4x6y4-2x6y3-2x5y4+4x3y6-3x6y2-2x5y3+x4y4+2x3y5+2x2y6+2x3y4+2x2y5-xy6-x3y3+y6+y5
+groebner(B);
+// _[1]=x3
+// _[2]=x2y2
+// _[3]=y5-xy3+y4+x2y
+// _[4]=2xy4+y5+xy3+y4+x2y
+//[1]:
+//   _[1]=x3
+//   _[2]=x3y
+//   _[3]=x2y2
+//   _[4]=x2y3
+//   _[5]=xy4+xy3
+//   _[6]=2xy4+y5+xy3+y4+x2y
+
+ring r = 0, (x,y), dp;
+// ** redefining r (ring r = 0, (x,y), dp;)
+
+poly a1 = -1;
+poly b1 = -y;
+poly f1 = y3+x2;
+poly f2 = y2;
+
+ideal B1 = x*b1*f2, x*b1*f2*y, b1*f2*y2;
+ideal B2 = x*a1*f1, a1*f1*y;
+ideal B = x3, B1, B2;
+B = groebner(B);
+
+B;
+//B[1]=x3
+//B[2]=y4+x2y
+//B[3]=xy3
+//B[4]=x2y2
+
+B;
+//B[1]=x3
+//B[2]=-xy3
+//B[3]=-xy4
+//B[4]=-y5
+//B[5]=-xy3-x3
+//B[6]=-y4-x2y
+
+ring r = 0, (x,y), dp;
+// ** redefining r (ring r = 0, (x,y), dp;)
+
+poly a1 = -1;
+poly b1 = -y;
+poly f1 = y3+x2;
+poly f2 = y2-x3;
+ideal B1 = x*b1*f2, x*b1*f2*y, b1*f2*y2;
+ideal B2 = x*a1*f1, a1*f1*y;
+ideal B = x3, B1, B2;
+B = groebner(B);
+B;
+//B[1]=x3
+//B[2]=y4+x2y
+//B[3]=xy3
+//B[4]=x2y2
+
+B1;
+//B1[1]=x4y-xy3
+//B1[2]=x4y2-xy4
+//B1[3]=x3y3-y5
+
+B2;
+//B2[1]=-xy3-x3
+//B2[2]=-y4-x2y
+
+f1*f2+x3*y2
+f1*f2+x2*y4
+
+//[2]:
+//   [1]:
+//      _[1]=x2y2
+//      _[2]=x3y
+//      _[3]=x4-xy2
+//      _[4]=y3
+
+changeDenominatorFast(I,y3,x3,g);
+//changeDenominatorFast
+//_[1]=x3
+//_[2]=y4+x2y
+//_[3]=xy3
+//_[4]=x2y2
+changeDenominatorFast(I,y3,x3,g);
+//changeDenominatorFast
+//_[1]=x3
+//_[2]=y4+x2y
+//_[3]=xy3
+//_[4]=x2y2
+g;
+//x100-x3y3+101x2y4-x5+y5+x2y2
+g1;
+//x100+100x99y+4950x98y2+161700x97y3+3921225x96y4+75287520x95y5+1192052400x94y6+16007560800x93y7+186087894300x92y8+1902231808400x91y9+17310309456440x90y10+141629804643600x89y11+1050421051106700x88y12+7110542499799200x87y13+44186942677323600x86y14+253338471349988640x85y15+1345860629046814650x84y16+6650134872937201800x83y17+30664510802988208300x82y18+132341572939212267400x81y19+535983370403809682970x80y20+2041841411062132125600x79y21+7332066885177656269200x78y22+24865270306254660391200x77y23+79776075565900368755100x76y24+242519269720337121015504x75y25+699574816500972464467800x74y26+1917353200780443050763600x73y27+4998813702034726525205100x72y28+12410847811948286545336800x71y29+29372339821610944823963760x70y30+66324638306863423796047200x69y31+143012501349174257560226775x68y32+294692427022540894366527900x67y33+580717429720889409486981450x66y34+1095067153187962886461165020x65y35+1977204582144932989443770175x64y36+3420029547493938143902737600x63y37+5670048986634686922786117600x62y38+9013924030034630492634340800x61y39+13746234145802811501267369720x60y40+20116440213369968050635175200x59y41+28258808871162574166368460400x58y42+38116532895986727945334202400x57y43+49378235797073715747364762200x56y44+61448471214136179596720592960x55y45+73470998190814997343905056800x54y46+84413487283064039501507937600x53y47+93206558875049876949581681100x52y48+98913082887808032681188722800x51y49+100891344545564193334812497256x50y50+98913082887808032681188722800x49y51+93206558875049876949581681100x48y52+84413487283064039501507937600x47y53+73470998190814997343905056800x46y54+61448471214136179596720592960x45y55+49378235797073715747364762200x44y56+38116532895986727945334202400x43y57+28258808871162574166368460400x42y58+20116440213369968050635175200x41y59+13746234145802811501267369720x40y60+9013924030034630492634340800x39y61+5670048986634686922786117600x38y62+3420029547493938143902737600x37y63+1977204582144932989443770175x36y64+1095067153187962886461165020x35y65+580717429720889409486981450x34y66+294692427022540894366527900x33y67+143012501349174257560226775x32y68+66324638306863423796047200x31y69+29372339821610944823963760x30y70+12410847811948286545336800x29y71+4998813702034726525205100x28y72+1917353200780443050763600x27y73+699574816500972464467800x26y74+242519269720337121015504x25y75+79776075565900368755100x24y76+24865270306254660391200x23y77+7332066885177656269200x22y78+2041841411062132125600x21y79+535983370403809682970x20y80+132341572939212267400x19y81+30664510802988208300x18y82+6650134872937201800x17y83+1345860629046814650x16y84+253338471349988640x15y85+44186942677323600x14y86+7110542499799200x13y87+1050421051106700x12y88+141629804643600x11y89+17310309456440x10y90+1902231808400x9y91+186087894300x8y92+16007560800x7y93+1192052400x6y94+75287520x5y95+3921225x4y96+161700x3y97+4950x2y98+100xy99+y100-x3y3+98x2y4+199xy5+100y6-x5-5x4y-10x3y2-10x2y3-5xy4+x2y2+2xy3+y4
+normal(g1);
+
+[2]:
+   [1]:
+      _[1]=x7y2-x2y2
+      _[2]=x8y-x3y+5x2y2
+      _[3]=x9-x4+5x3y-15x2y2+xy2
+      _[4]=y3
+
+      
+LIB"integralbasis.lib";
+ring r = 0, (x,y), dp;
+poly f1 = y3+x2;
+poly f2 = y2-x3;
+poly g = f1*f2+101*x2*y4+x10;
+poly g1 = subst(g, x, x+y);
+
+ideal I = l0[2][1];
+changeDenominatorFast(I,y3,x3,g);
+//changeDenominatorFast
+//_[1]=x3
+//_[2]=y4+x2y
+//_[3]=xy3
+//_[4]=x2y2
+
+ideal J = changeDenominatorFast(I,y3,x3,g);
+//changeDenominatorFast
+ideal J2 = subst(J, x, x+y);
+J2;
+//J2[1]=x3+3x2y+3xy2+y3
+//J2[2]=y4+x2y+2xy2+y3
+//J2[3]=xy3+y4
+//J2[4]=x2y2+2xy3+y4
+
+
+> changeDenominatorFast(I,y3,x3,g1);
+changeDenominatorFast
+_[1]=x3
+_[2]=y9+3608x2y3-801xy4+100y5+40x2y2-5xy3+36x2y-8xy2+y3
+_[3]=xy8-801x2y3+100xy4-5x2y2-8x2y+xy2
+_[4]=x2y7+100x2y3+x2y
+> poly g = f1*f2+101*x2*y4+x10;
+// ** redefining g (poly g = f1*f2+101*x2*y4+x10;)
+
+> poly g1 = subst(g, x, x+y);
+// ** redefining g1 (poly g1 = subst(g, x, x+y);)
+
+> list l = normal(g1);
+// ** redefining l (list l = normal(g1);)
+
+
+// 'normal' created a list, say nor, of two elements.
+// To see the list type
+      nor;
+
+// * nor[1] is a list of 1 ring(s).
+// To access the i-th ring nor[1][i], give it a name, say Ri, and type
+     def R1 = nor[1][1]; setring R1; norid; normap;
+// For the other rings type first (if R is the name of your base ring)
+     setring R;
+// and then continue as for R1.
+// Ri/norid is the affine algebra of the normalization of R/P_i where
+// P_i is the i-th component of a decomposition of the input ideal id
+// and normap the normalization map from R to Ri/norid.
+
+// * nor[2] is a list of 1 ideal(s). Let ci be the last generator
+// of the ideal nor[2][i]. Then the integral closure of R/P_i is
+// generated as R-submodule of the total ring of fractions by
+// 1/ci * nor[2][i].
+> ideal I = l[2][1];
+// ** redefining I (ideal I = l[2][1];)
+
+> changeDenominatorFast(I,y3,x3,g1);
+changeDenominatorFast
+_[1]=x3
+_[2]=y9+3608x2y3-801xy4+100y5+40x2y2-5xy3+36x2y-8xy2+y3
+_[3]=xy8-801x2y3+100xy4-5x2y2-8x2y+xy2
+_[4]=x2y7+100x2y3+x2y
+> I;
+I[1]=x7y2-x2y2
+I[2]=x8y-x3y+5x2y2
+I[3]=x9-x4+5x3y-15x2y2+xy2
+I[4]=y3
+> ring r = 0, (x,y), dp;
+> poly a1 = -1;
+> poly b1 = -y;
+> poly f1 = y3+x2;
+> poly f2 = y2-x3;
+> 
+. ideal B1 = x*b1*f2, x*b1*f2*y, b1*f2*y2;
+> ideal B2 = x*a1*f1, a1*f1*y;
+> ideal B = x3, B1, B2;
+> B;
+B[1]=x3
+B[2]=x4y-xy3
+B[3]=x4y2-xy4
+B[4]=x3y3-y5
+B[5]=-xy3-x3
+B[6]=-y4-x2y
+> ideal C2 = subst(B,x,x+y);
+> C2;
+C2[1]=x3+3x2y+3xy2+y3
+C2[2]=x4y+4x3y2+6x2y3+4xy4+y5-xy3-y4
+C2[3]=x4y2+4x3y3+6x2y4+4xy5+y6-xy4-y5
+C2[4]=x3y3+3x2y4+3xy5+y6-y5
+C2[5]=-xy3-y4-x3-3x2y-3xy2-y3
+C2[6]=-y4-x2y-2xy2-y3
+ ideal J = changeDenominatorFast(C2,(x+y)^3,y3,g1);
+// ** redefining J (ideal J = changeDenominatorFast(C2,(x+y)^3,y3,g1);)
+
+changeDenominatorFast
+> J;
+J[1]=y3
+J[2]=x7y2-x2y2
+J[3]=x8y-x3y+5x2y2
+J[4]=x9-x4+5x3y-15x2y2+xy2

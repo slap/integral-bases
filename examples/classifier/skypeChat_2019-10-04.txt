@@ -1,0 +1,215 @@
+> ring R = 0, (x,y), dp;
+> poly g = 4*x^2*y^4+x^3*y^3+y^2*x^4+5*x^12+y^11;
+> list l = integralBasis(g, 2);
+Check at origin
+Puiseux expansion: 
+[1]:
+   // coefficients: QQ[@a]/(...)
+// number of vars : 2
+//        block   1 : ordering dp
+//                  : names    x y
+//        block   2 : ordering C
+[2]:
+   // coefficients: QQ[@a]/(...)
+// number of vars : 2
+//        block   1 : ordering dp
+//                  : names    x y
+//        block   2 : ordering C
+[3]:
+   // coefficients: QQ[@a]/(...)
+// number of vars : 2
+//        block   1 : ordering dp
+//                  : names    x y
+//        block   2 : ordering C
+nClasses:  3
+Coefficient for the chinese remainder:  y ^ 3  hi
+Order of the coefficient:  2
+bestElem[cl][k - (n-md[cl]+1)] y
+bestElem[cl][k - (n-md[cl]+1)] y2
+bestElem[cl][k - (n-md[cl]+1)] y3
+bestElem[cl][k - (n-md[cl]+1)] y4
+bestElem[cl][k - (n-md[cl]+1)] y5
+bestElem[cl][k - (n-md[cl]+1)] y6
+ibNumNoFac [1]:
+   y
+[2]:
+   y2
+[3]:
+   y3
+[4]:
+   y4
+[5]:
+   y5
+[6]:
+   y6
+outp [1]:
+   _[1]=x3
+   _[2]=x3y
+   _[3]=x3y2
+   _[4]=x3y3
+   _[5]=-119/262144x8y5-171/262144x7y6+1/4x3y5+1/4x2y6+xy7
+   _[6]=-119/262144x8y6-171/262144x7y7+1/4x3y6+1/4x2y7+xy8
+   _[7]=-119/262144x8y7-171/262144x7y8+1/4x3y7+1/4x2y8+xy9
+   _[8]=-119/262144x8y8-171/262144x7y9+1/4x3y8+1/4x2y9+xy10
+   _[9]=-119/262144x7y9-171/262144x6y10+1/4x2y9+1/4xy10+y11
+   _[10]=-119/262144x7y10-171/262144x6y11+1/4x2y10+1/4xy11+y12
+   _[11]=-119/262144x7y11-171/262144x6y12+1/4x2y11+1/4xy12+y13
+[2]:
+   x3
+nClasses:  3
+baseFactor:  5/4x8y7-5x7y8+67/524288x7y7+171/262144x6y8+119/16384x7y2+13/4096x6y3-33/1024x5y4+5/256x4y5+7/64x3y6-3/16x2y7-1/4xy8+y9+4x2y2
+bestElem[cl][k - (n-md[cl]+1)] y
+ibNumNoFac [1]:
+   y
+outp [1]:
+   _[1]=x5
+   _[2]=x5y
+   _[3]=x5y2
+   _[4]=x5y3
+   _[5]=x5y4
+   _[6]=x5y5
+   _[7]=x5y6
+   _[8]=x5y7
+   _[9]=x5y8
+   _[10]=5/4x9y7-5x8y8+67/524288x8y7+171/262144x7y8+119/16384x8y2+13/4096x7y3-33/1024x6y4+5/256x5y5+7/64x4y6-3/16x3y7-1/4x2y8+xy9+4x3y2
+   _[11]=-5x7y9+67/524288x7y8+171/262144x6y9+119/16384x7y3+13/4096x6y4-33/1024x5y5+5/256x4y6+7/64x3y7-3/16x2y8-1/4xy9+y10+4x2y3
+[2]:
+   x5
+nClasses:  3
+baseFactor:  -5/4x8y7+5x7y8+1807/4194304x8y6+y9+x4+x3y+4x2y2
+bestElem[cl][k - (n-md[cl]+1)] y
+ibNumNoFac [1]:
+   y
+outp [1]:
+   _[1]=x8
+   _[2]=x8y
+   _[3]=x8y2
+   _[4]=x8y3
+   _[5]=x8y4
+   _[6]=x8y5
+   _[7]=x8y6
+   _[8]=x8y7
+   _[9]=x8y8
+   _[10]=-5/4x12y7+5x11y8+1807/4194304x12y6+x4y9+x8+x7y+4x6y2
+   _[11]=5x7y9+y10+x4y+x3y2+4x2y3
+[2]:
+   x8
+proc merge bases takes common denominator of the bases, but does not perform any interreduction.
+mergeBases input:  [1]:
+   [1]:
+      _[1]=x3
+      _[2]=x3y
+      _[3]=x3y2
+      _[4]=x3y3
+      _[5]=-119/262144x8y5-171/262144x7y6+1/4x3y5+1/4x2y6+xy7
+      _[6]=-119/262144x8y6-171/262144x7y7+1/4x3y6+1/4x2y7+xy8
+      _[7]=-119/262144x8y7-171/262144x7y8+1/4x3y7+1/4x2y8+xy9
+      _[8]=-119/262144x8y8-171/262144x7y9+1/4x3y8+1/4x2y9+xy10
+      _[9]=-119/262144x7y9-171/262144x6y10+1/4x2y9+1/4xy10+y11
+      _[10]=-119/262144x7y10-171/262144x6y11+1/4x2y10+1/4xy11+y12
+      _[11]=-119/262144x7y11-171/262144x6y12+1/4x2y11+1/4xy12+y13
+   [2]:
+      x3
+[2]:
+   [1]:
+      _[1]=x5
+      _[2]=x5y
+      _[3]=x5y2
+      _[4]=x5y3
+      _[5]=x5y4
+      _[6]=x5y5
+      _[7]=x5y6
+      _[8]=x5y7
+      _[9]=x5y8
+      _[10]=5/4x9y7-5x8y8+67/524288x8y7+171/262144x7y8+119/16384x8y2+13/4096x7y3-33/1024x6y4+5/256x5y5+7/64x4y6-3/16x3y7-1/4x2y8+xy9+4x3y2
+      _[11]=-5x7y9+67/524288x7y8+171/262144x6y9+119/16384x7y3+13/4096x6y4-33/1024x5y5+5/256x4y6+7/64x3y7-3/16x2y8-1/4xy9+y10+4x2y3
+   [2]:
+      x5
+[3]:
+   [1]:
+      _[1]=x8
+      _[2]=x8y
+      _[3]=x8y2
+      _[4]=x8y3
+      _[5]=x8y4
+      _[6]=x8y5
+      _[7]=x8y6
+      _[8]=x8y7
+      _[9]=x8y8
+      _[10]=-5/4x12y7+5x11y8+1807/4194304x12y6+x4y9+x8+x7y+4x6y2
+      _[11]=5x7y9+y10+x4y+x3y2+4x2y3
+   [2]:
+      x8
+[4]:
+   [1]:
+      _[1]=x2
+      _[2]=x2
+      _[3]=x2y
+      _[4]=x2y2
+      _[5]=x2y3
+      _[6]=xy4
+      _[7]=xy5
+      _[8]=xy6
+      _[9]=y7
+      _[10]=y8
+      _[11]=y9
+      _[12]=y10
+   [2]:
+      x2
+mergeBases out:  [1]:
+   _[1]=x8
+   _[2]=x8y
+   _[3]=x8y2
+   _[4]=x8y3
+   _[5]=-119/262144x13y5-171/262144x12y6+1/4x8y5+1/4x7y6+x6y7
+   _[6]=-119/262144x13y6-171/262144x12y7+1/4x8y6+1/4x7y7+x6y8
+   _[7]=-119/262144x13y7-171/262144x12y8+1/4x8y7+1/4x7y8+x6y9
+   _[8]=-119/262144x13y8-171/262144x12y9+1/4x8y8+1/4x7y9+x6y10
+   _[9]=-119/262144x12y9-171/262144x11y10+1/4x7y9+1/4x6y10+x5y11
+   _[10]=-119/262144x12y10-171/262144x11y11+1/4x7y10+1/4x6y11+x5y12
+   _[11]=-119/262144x12y11-171/262144x11y12+1/4x7y11+1/4x6y12+x5y13
+   _[12]=x8y4
+   _[13]=x8y5
+   _[14]=x8y6
+   _[15]=x8y7
+   _[16]=x8y8
+   _[17]=5/4x12y7-5x11y8+67/524288x11y7+171/262144x10y8+119/16384x11y2+13/4096x10y3-33/1024x9y4+5/256x8y5+7/64x7y6-3/16x6y7-1/4x5y8+x4y9+4x6y2
+   _[18]=-5x10y9+67/524288x10y8+171/262144x9y9+119/16384x10y3+13/4096x9y4-33/1024x8y5+5/256x7y6+7/64x6y7-3/16x5y8-1/4x4y9+x3y10+4x5y3
+   _[19]=-5/4x12y7+5x11y8+1807/4194304x12y6+x4y9+x8+x7y+4x6y2
+   _[20]=5x7y9+y10+x4y+x3y2+4x2y3
+   _[21]=x7y4
+   _[22]=x7y5
+   _[23]=x7y6
+   _[24]=x6y7
+   _[25]=x6y8
+   _[26]=x6y9
+   _[27]=x6y10
+[2]:
+   x8
+reduction of numerators by the denominator:  [1]:
+   _[1]=x8y
+   _[2]=y10+x4y+x3y2+4x2y3
+   _[3]=x7y4
+   _[4]=x4y9+x7y+4x6y2
+   _[5]=3x5y8-16x3y10-4x7y-16x6y2-64x5y3
+   _[6]=x6y7
+[2]:
+   x8
+----Time for groebner base of generators:  0
+------Time for std(M):  0
+------Time for triangulation:  0
+output of mergeBases put into integral basis shape:  [1]:
+   _[1]=x8
+   _[2]=x8y
+   _[3]=x8y2
+   _[4]=x8y3
+   _[5]=x7y4
+   _[6]=x7y5
+   _[7]=x7y6
+   _[8]=x6y7
+   _[9]=x5y8+4x7y
+   _[10]=x4y9+x7y+4x6y2
+   _[11]=y10+x4y+x3y2+4x2y3
+[2]:
+   x8
+> 

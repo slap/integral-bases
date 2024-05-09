@@ -1,0 +1,12 @@
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+poly f = x^(30)+x^2*y^2+y^(11);
+map phi = R,x+2*y+x^2+x*y+y^2+x^3,3*x+5*y+x^2*y+y^2;
+f=phi(f);
+int t = timer;
+list l1 = henselBlocks(f, 14, 1);
+timer - t;
+
+t = timer;
+list l2 = puiseuxList(f,-1,1,2);
+timer - t;
