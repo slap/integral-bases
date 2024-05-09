@@ -1,0 +1,16 @@
+# Slow examples in Maple
+
+# Very slow
+with(algcurves);
+f := (y^15 + y^4*x + x^4)*(y^16 + y^4*x + x^4)*(y^17 + y^4*x + x^4)*(y^5 + y^4*x + x^4)*(y^5 + y^4*x + x^4)*(y^5 + y^4*x + x^4)*(y^7 + y^6*x^4 + y^4*x^3 + x^5)*(y^9 - x^3)*(y^3-x^2) * (y^4+y^3*x^2+x^3) + y^100;
+puiseux(expand(f),x=0,y,0);
+
+# A little slow
+with(algcurves);
+f := (y^5 + y^4*x + x^4) * (y^5 + y^4*x + x^4) * (y^5 + y^4*x + x^4)  + y^30;
+puiseux(expand(f),x=0,y,0);
+
+# Medium slow and huge coefficients
+with(algcurves);
+f := (x-2*y)^7*(x-3*y)^11*(x^101-7*y^101)*(x^133+x^101-11*y^101)+x^503;
+puiseux(expand(f),x=0,y,0);

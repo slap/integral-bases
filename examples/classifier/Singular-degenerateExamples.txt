@@ -1,0 +1,55 @@
+The examples we discussed on August 10, 2022
+
+// 8 seconds for non-truncated vs 0 seconds for truncated
+
+LIB "sing.lib";
+ring R = 101, (x,y), ds;
+poly f = (y^15 + y^4*x + x^4)*(y^16 + y^4*x + x^4)*(y^17 + y^4*x + x^4)*(y^5 + y^4*x + x^4)*(y^5 + y^4*x + x^4)*(y^5 + y^4*x + x^4)*(y^7 + y^6*x^4 + y^4*x^3 + x^5)*(y^9 - x^3)*(y^3-x^2) * (y^4+y^3*x^2+x^3) + y^100;
+
+map phi = R, x+2*y+x*y+x^2*y+y^2+x^5+y^5+x^2*y^2, y+3*x+x^2*y;
+poly g = phi(f);
+int t = timer;
+milnor(g);
+timer - t;
+
+ideal I = maxideal(145);
+ideal H = jacob(f);
+ideal J = I + H;
+int t = timer;
+ideal M = groebner(J);
+kbase(M);
+timer - t;
+
+
+ideal H = jacob(g);
+int t = timer;
+highcorner(groebner(H));
+timer - t;
+
+
+
+// 68 seconds for non-truncated vs 1 seconds for truncated
+
+LIB "sing.lib";
+ring R = 101, (x,y), ds;
+poly f = (y^15 + y^4*x + x^4)*(y^16 + y^4*x + x^4)*(y^17 + y^4*x + x^4)*(y^5 + y^4*x + x^4)*(y^5 + y^4*x + x^4)*(y^5 + y^4*x + x^4)*(y^7 + y^6*x^4 + y^4*x^3 + x^5)*(y^9 - x^3)*(y^3-x^2) * (y^4+y^3*x^2+x^3) + y^100;
+
+map phi = R, x+2*y+x*y+x^2*y+y^2+x^5+y^5+7*x^2*y^2+51*x^10*y^17, y+3*x+x^2*y+37*x^7*y^8;
+poly g = phi(f);
+int t = timer;
+milnor(g);
+timer - t;
+
+ideal I = maxideal(145);
+ideal H = jacob(g);
+ideal J = I + H;
+int t = timer;
+ideal M = groebner(J);
+kbase(M);
+timer - t;
+
+
+ideal H = jacob(g);
+int t = timer;
+highcorner(groebner(H));
+timer - t;
