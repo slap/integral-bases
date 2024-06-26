@@ -1,5 +1,5 @@
 # integral-bases
-Singular code and examples for computing integral bases and related staff
+Singular code and examples for computing integral bases and related stuff
 
 ## Usage example:
 ```
