@@ -1,0 +1,263 @@
+// Example 1
+
+LIB"integralbasis.lib";
+ring r = 0, (x,y), dp;
+poly f = x^8+x^2*y^2+y^11;
+normal(f);  // Very fast, 0 seconds
+// [2]:
+//    [1]:
+//       _[1]=x4y2
+//       _[2]=-y10
+//       _[3]=y8
+//       _[4]=x7y
+//       _[5]=xy3
+
+integralBasis(f,2);  // Very fast, 0 seconds
+//[1]:
+//   _[1]=x5
+//   _[2]=x5y
+//   _[3]=x5y2
+//   _[4]=x5y3
+//   _[5]=x5y4
+//   _[6]=x4y5
+//   _[7]=x4y6
+//   _[8]=x4y7
+//   _[9]=x4y8
+//   _[10]=x3y9
+//   _[11]=y10+x2y
+//[2]:
+//   x5
+
+LIB"ibDebTools.lib";
+printlevel = 10;
+LIB"integralbasis.lib";
+ring r = 0, (x,y), dp;
+poly f = x^8+x^2*y^2+y^11;
+map m = r, x+2*y+x^2+x*y+y^2+x^3,3*x+5*y+x^2*y+y^2;
+poly ff = m(f);
+list l = integralBasis(ff,2,"atOrigin");
+list l = ibComp(ff, "locLoc", "atOrigin");
+
+// Time Singular:  63 / 100 seg
+// Time Maple:  4.050 seg
+
+//////////////////////////////////////////////////////////////////////
+
+// Example 2
+
+// Maple is very slow in this example compared to Singular
+// (for the perturbed form)
+
+// Normal form
+LIB"ibDebTools.lib";
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = 4*x^2*y^4+x^3*y^3+y^2*x^4+5*x^8+y^7;
+list l = integralBasis(g,2,"atOrigin");
+list l = ibComp(g, "locLoc", "atOrigin");
+
+// Time Singular:  26 / 100 seg
+// Time Maple:  .90e-1 seg
+
+// Perturbed form
+LIB"ibDebTools.lib";
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = 4*x^2*y^4+x^3*y^3+y^2*x^4+5*x^8+y^7;
+map phi = R,x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^3, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^7;
+poly f = phi(g);
+poly f2 = substitute(f,x,x+y);
+f2 = monic(f2);  
+list l = integralBasis(f2,2,"atOrigin");
+list l = ibComp(f2, "locLoc", "atOrigin");
+
+Time Singular:  620 / 100 seg
+Time Maple:  183.920 seg
+
+//////////////////////////////////////////////////////////////////////
+
+// Example 3
+
+// Normal form
+LIB"ibDebTools.lib";
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = 4*x^2*y^4+x^3*y^3+y^2*x^4+5*x^12+y^11;
+list l = integralBasis(g,2,"atOrigin");
+list l = ibComp(g, "locLoc", "atOrigin");
+
+// Time Singular:  27 / 100 seg
+// Time Maple:  .129 seg
+
+// Perturbed form
+LIB"ibDebTools.lib";
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = 4*x^2*y^4+x^3*y^3+y^2*x^4+5*x^12+y^11;
+map phi = R,x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^3, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^7;
+init_debug(3);
+poly f = phi(g);
+poly f2 = substitute(f,x,x+y);
+f2=monic(f2);  
+list l = integralBasis(f2,2,"atOrigin");
+list l = ibComp(f2, "locLoc", "atOrigin");
+
+// Time Singular:  3308 / 100 seg
+// Time Maple:  slow (not finished after 10 minutes)
+
+//////////////////////////////////////////////////////////////////////
+
+// Example 4
+
+// "E[19]":x^3+x*y^7+a*y^11+b*y^12
+
+LIB"ibDebTools.lib";
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+int a = 5; int b = 7;
+poly f = x^3+x*y^7+a*y^11+b*y^12;
+f = monic(f);
+map phi = R,x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^3, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^7;
+poly g = phi(f);
+poly g2 = substitute(g,x,x+y);
+g2 = monic(g2);
+list l = ibComp(g2, "locLoc", "check0", "atOrigin", "singular");
+
+// Time Singular:  755 / 100 seg
+
+list l = ibComp(g2, "locLoc", "check0", "atOrigin");  // Maple doesn't finish
+integralBasis(g2,2,"atOrigin");
+
+
+//////////////////////////////////////////////////////////////////////
+
+// Example 5
+
+// "E[20]":x^3+y^11+a*x*y^8+b*x*y^9
+
+LIB"ibDebTools.lib";
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+int a = 5; int b = 7;
+poly f = x^3+y^11+a*x*y^8+b*x*y^9;
+f = monic(f);
+map phi = R,x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^3, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^7;
+poly g = phi(f);
+poly g2 = substitute(g,x,x+y);
+g2 = monic(g2);
+list l = ibComp(g2, "locLoc", "check0", "atOrigin", "singular");
+
+// Time Singular:  394 / 100 seg
+
+list l = ibComp(g2, "locLoc", "check0", "atOrigin");  // Maple doesn't finish
+integralBasis(g2,2,"atOrigin");
+
+
+//////////////////////////////////////////////////////////////////////
+
+// Example 6
+// "Z[19]":x^3*y+y^9+a*x*y^7+b*x*y^8
+
+// ? The input polynomial must be irreducible.
+
+//////////////////////////////////////////////////////////////////////
+
+// Example 7
+// "W[18]":x^4+y^7+a*x^2*y^4+b*x^2*y^5
+
+LIB"ibDebTools.lib";
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+int a = 5; int b = 7;
+poly f = x^4+y^7+a*x^2*y^4+b*x^2*y^5;
+f = monic(f);
+map phi = R,x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^3, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^7;
+poly g = phi(f);
+poly g2 = substitute(g,x,x+y);
+g2 = monic(g2);
+list l = ibComp(g2, "locLoc", "check0", "atOrigin");
+
+// Time Singular:  34 / 100 seg
+// Time Maple:  53.150 seg
+// Same output? 1
+
+list l = ibComp(g2, "locLoc", "check0", "atOrigin", "singular");
+
+//////////////////////////////////////////////////////////////////////
+
+// Example 8
+// "W[1,0]":x^4+x^2*y^3+y^6+a*x^2*y^3+b*x^2*y^4
+
+LIB"ibDebTools.lib";
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+int a = 5; int b = 7;
+poly f = x^4+x^2*y^3+y^6+a*x^2*y^3+b*x^2*y^4;
+f = monic(f);
+map phi = R,x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^3, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^7;
+poly g = phi(f);
+poly g2 = substitute(g,x,x+y);
+g2 = monic(g2);
+list l = ibComp(g2, "locLoc", "check0", "atOrigin");
+
+// Time Singular:  28 / 100 seg
+// Time Maple:  12.610 seg
+// Same output? 1
+
+list l = ibComp(g2, "locLoc", "check0", "atOrigin", "singular");
+
+
+//////////////////////////////////////////////////////////////////////
+
+// Example 9
+// "J[3,p]": x^3+x^2*y^3+a*y^(9+p)+b*y^(10+p)
+
+LIB"ibDebTools.lib";
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+int a = 5; int b = 7; int p = 5;
+poly f = x^3+x^2*y^3+a*y^(9+p)+b*y^(10+p);
+f = monic(f);
+map phi = R,x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^3, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^7;
+poly g = phi(f);
+poly g2 = substitute(g,x,x+y);
+g2 = monic(g2);
+list l = ibComp(g2, "locLoc", "check0", "atOrigin");
+
+// p = 1
+// Time Singular:  416 / 100 seg
+// Time Maple:  814.560 seg
+// Same output? 1
+
+// p = 5
+// Time Singular:  4314 / 100 seg
+
+
+list l = ibComp(g2, "locLoc", "check0", "atOrigin", "singular");
+
+//////////////////////////////////////////////////////////////////////
+
+// Example 10
+// "W[1,p]": x^4+x^2*y^3+a*y^(6+p)+b*y^(7+p), p>0
+
+LIB"ibDebTools.lib";
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+int a = 5; int b = 7; int p = 9;
+poly f = x^4+x^2*y^3+a*y^(6+p)+b*y^(7+p);
+f = monic(f);
+map phi = R, x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^3, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^7;
+poly g = phi(f);
+poly g2 = substitute(g,x,x+y);
+g2 = monic(g2);
+list l = ibComp(g2, "locLoc", "check0", "atOrigin");
+
+// p = 7;
+// Time Singular:  1794 / 100 seg
+
+// p = 9;
+// Time Singular:  5318 / 100 seg
+
+list l = ibComp(g2, "locLoc", "check0", "atOrigin", "singular");
+
+
