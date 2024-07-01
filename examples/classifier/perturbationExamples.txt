@@ -83,7 +83,10 @@ LIB"ibDebTools.lib";
 LIB"integralbasis.lib";
 ring R = 0, (x,y), dp;
 poly g = 4*x^2*y^4+x^3*y^3+y^2*x^4+5*x^12+y^11;
-list l = integralBasis(g,2,"atOrigin");
+int t = timer;
+list l = integralBasis(g,2,"atOrigin","opti1");
+timer - t;
+
 list l = ibComp(g, "locLoc", "atOrigin");
 
 // Time Singular:  27 / 100 seg
@@ -97,9 +100,12 @@ poly g = 4*x^2*y^4+x^3*y^3+y^2*x^4+5*x^12+y^11;
 map phi = R,x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^3, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^7;
 init_debug(3);
 poly f = phi(g);
-poly f2 = substitute(f,x,x+y);
-f2=monic(f2);  
-list l = integralBasis(f2,2,"atOrigin");
+f = substitute(f,x,x+y);
+f = monic(f);  
+int t = timer;
+list l = integralBasis(f,2,"atOrigin","opti1");
+timer - t;
+
 list l = ibComp(f2, "locLoc", "atOrigin");
 
 // Time Singular:  3308 / 100 seg
