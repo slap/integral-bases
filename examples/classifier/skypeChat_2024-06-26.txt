@@ -1,7 +1,25 @@
-ring R=0,(x,y),ds;
-poly g = x4+2*x2y2+y4+x^(10)+y^(10);
+// cd C:/Users/Usuario/Documents/GitHub/integral-bases
+
+// We compare timing before and after the transformation
+
+LIB"integralbasis.lib";
+ring R=0,(x,y),dp;
+poly f = x4+2*x2y2+y4+x^(11)+y^(11);
 poly phix = x+y^2+x^2+x*y+x^2*y+x*y^3;
 poly phiy = y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4;
 map phi = R,phix,phiy;
-g=phi(g);
+poly g=phi(f);
 
+// We apply this extra transformation so that the polynomial is monic as a polynomial in y.
+g = substitute(g,x,x+y);
+g = monic(g);
+
+int t = timer;
+list l1 = integralBasis(f,2, "atOrigin", "opti1");
+"Time for polynomial without transformations:", timer - t;
+// 0
+
+t = timer;
+list l2 = integralBasis(g,2, "atOrigin", "opti1");
+"Time for polynomial after transformations:", timer - t;
+// 2

@@ -484,13 +484,8 @@ static proc puiseuxMain(poly f, int maxDeg, int sN, int sD, int firstTime)
 
       fJe = factorize(je);
       
-//      "time 4";
-    
       fJe = Integralbasis::sortFactors(fJe);
-//      "time 4001";
       fNew1 = subst(f, var(1), var(1)^slD);
-//      "time 4002";
-      
       
       for(ii = 2; ii <= size(fJe[1]); ii++)
       {
@@ -498,9 +493,8 @@ static proc puiseuxMain(poly f, int maxDeg, int sN, int sD, int firstTime)
         {
           cod++;
         }
-//        "time 401";
         fTemp = subst(fJe[1][ii]^(fJe[2][ii]), var(1), var(1)^slD);
-//        "time 402";
+
         // Checks if a new extension is needed.
         // If so, we have a new cutting point for building the factors.
         if((deg(fJe[1][ii], vy) > 1) or (size(fJe[1]) > 2))
@@ -510,11 +504,9 @@ static proc puiseuxMain(poly f, int maxDeg, int sN, int sD, int firstTime)
         {
           newExt = 0;
         }
-//        "time 403";
+
         @c = puiseuxStep(fTemp, slN, 1);
         fc = factorize(@c);
-        
-//        "time 41";
         
         for(j = 2; j <= size(fc[1]); j++)
         {
@@ -544,10 +536,10 @@ static proc puiseuxMain(poly f, int maxDeg, int sN, int sD, int firstTime)
               {
                 if(slN >= 0)
                 {
-                  "Subst";
-                  t = timer;
+//                  "Subst";
+//                  t = timer;
                   fNew2 = subst(groebner(fNew1)[1], var(2), (c1+var(2))*(var(1)^slN));
-                  "time 1 = ", timer - t;
+//                  "time 1 = ", timer - t;
 //                  t = timer;
 //                  map phi = R, var(1), (c1+var(2))*(var(1)^slN);
 //                  fNew1b = groebner(fNew1)[1];
@@ -558,7 +550,7 @@ static proc puiseuxMain(poly f, int maxDeg, int sN, int sD, int firstTime)
                   // Negative exponent case
                   fNew2 = negExp(fNew1, c1, slN);
                 }
-                "sat before";
+                //"sat before";
                 //"fNew2", fNew2;
                 //"var(1)", var(1);
                 //testSat= sat(ideal(fNew2), var(1))[1][1];
@@ -568,7 +560,7 @@ static proc puiseuxMain(poly f, int maxDeg, int sN, int sD, int firstTime)
                 fNew2 = dBy[1];
                 //~;
               
-                "sat after";
+                //"sat after";
 
                 if(maxDeg > 0)
                 {
@@ -577,11 +569,7 @@ static proc puiseuxMain(poly f, int maxDeg, int sN, int sD, int firstTime)
                   newMaxDeg = maxDeg;
                 }
                 
-                "time 42";
-                
                 csT = puiseuxMain(fNew2, newMaxDeg, slN, 1, 0);
-                
-                "time 43";
                 
                 for(k = 1; k<=size(csT); k++)
                 {
@@ -612,7 +600,7 @@ static proc puiseuxMain(poly f, int maxDeg, int sN, int sD, int firstTime)
                         cs[size(cs)][7] = sum2All(csT[k][7], slN * csT[k][2]);
                       }
                     }
-                    "time 5";
+                    //"time 5";
     
                   } else {
                     def RT = csT[k];
@@ -715,10 +703,10 @@ static proc puiseuxMain(poly f, int maxDeg, int sN, int sD, int firstTime)
                 // We use the image of the root of minP in the new ring.
                 if(slN >= 0)
                 {
-                  "subs 2";
-                  t = timer;
+                  //"subs 2";
+                  //t = timer;
                   poly fNew2 = subst(fNew1, var(2), (newA + var(2))*var(1)^slN);
-                  "time = ", timer - t;
+                  //"time = ", timer - t;
                 } else 
                 {
                   poly fNew2 = negExp(fNew1, newA, slN);
