@@ -20,12 +20,12 @@ list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
 // Truncated polynomial
 execute(s);
 g = subst(g,x, x+y);
-poly gTrunc = jet(g, 48);
+poly gTrunc = jet(g, 104);
 gTrunc = monic(gTrunc);
 list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
 
 reduce(lTrunc[1], groebner(lOrig[1]+g));   // Does not give the same output
-reduce(lOrig[1], groebner(lTrunc[1]));   // Does not finish
+//reduce(lOrig[1], groebner(lTrunc[1]));   // Does not finish
 
 ////////////////////////////////////////////////////////////////////////
 // We try now truncation only the x powers
@@ -114,3 +114,69 @@ list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
 
 size(reduce(lTrunc[1], groebner(lOrig[1])));   // Same output
 size(reduce(lOrig[1], groebner(lTrunc[1])));   // Same output
+
+////////////////////////////////////////////////////////////////////////
+// We go back to the problem of computing the truncation order
+// when we truncate powers of x and y.
+
+// Simple example
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+poly g = (y4+3x3y + x4)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
+
+// Original polynomial without truncations
+g = monic(g);
+list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
+
+// Truncated polynomial
+int d = 28;
+poly gTrunc = jet(g, d) + x^d;
+gTrunc = monic(gTrunc);
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
+
+// Comparison
+size(reduce(lTrunc[1], groebner(lOrig[1] + gTrunc)));   // Same output if we use gTrunc but not if we use g
+size(reduce(lOrig[1], groebner(lTrunc[1] + g)));   // Same output
+
+
+// Determinacy
+LIB "polyclass.lib";
+LIB "arnoldgit.lib";
+ring R=0,(x,y),ds;
+poly g = (y4+3x3y + x4)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
+determinacyBound(g);  // 28
+
+
+
+
+// Complicated example
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+g = subst(g,x, x+y);
+
+// Original polynomial without truncations
+g = monic(g);
+list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
+
+// Truncated polynomial
+int d = 28;
+poly gTrunc = jet(g, d) + x^d;
+gTrunc = monic(gTrunc);
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
+
+// Comparison
+size(reduce(lTrunc[1], groebner(lOrig[1] + gTrunc)));   // Same output if we use gTrunc but not if we use g
+size(reduce(lOrig[1], groebner(lTrunc[1] + g)));   // Same output
+
+
+// Determinacy
+LIB "polyclass.lib";
+LIB "arnoldgit.lib";
+ring R=0,(x,y),ds;
+poly g = (y4+3x3y + x4)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
+determinacyBound(g);  // 28
+

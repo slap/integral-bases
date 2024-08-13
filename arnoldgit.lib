@@ -84,11 +84,11 @@ was splitted off to transform it to a germ with nondegenerate Newton boundary (i
 is given up to filtration d, where d is a determinacy bound for the polynomial, if possible
 ";
 
-LIB "gfanlib.so";
+//LIB "gfanlib.so";
 LIB "polyclass.lib";
 LIB "absfact.lib";
 LIB "primdec.lib";
-LIB "realclassify.lib";
+//LIB "realclassify.lib";
 LIB "zeroset.lib";
 LIB "elim.lib";
 LIB "hnoether.lib";
