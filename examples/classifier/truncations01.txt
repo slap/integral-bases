@@ -1,0 +1,85 @@
+////////////////////////////////////////////////////////////////////////
+// We check if we can truncate in the original polynomial all monomials of total degree higher than the delta invariant
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+g = subst(g,x, x+y);
+
+// Determinacy = 20
+// Delta invariant = 48
+
+// Original polynomial without truncations
+g = monic(g);
+list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
+
+// Truncated polynomial
+execute(s);
+g = subst(g,x, x+y);
+poly gTrunc = jet(g, 48);
+gTrunc = monic(gTrunc);
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
+
+reduce(lTrunc[1], groebner(lOrig[1]+g));   // Does not give the same output
+reduce(lOrig[1], groebner(lTrunc[1]));   // Does not finish
+
+////////////////////////////////////////////////////////////////////////
+// We try now truncation only the x powers
+// We truncate at degree 14. The integrality exponent 11, but if we reduce modulo x12, the polynomial becomes reducible.
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+g = subst(g,x, x+y);
+
+// Original polynomial without truncations
+g = monic(g);
+int t = timer;
+list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
+"Time for original polynomial: ", timer - t;
+
+// Truncated polynomial
+execute(s);
+g = subst(g,x, x+y);
+poly gTrunc = reduce(g, groebner(x14));
+gTrunc = monic(gTrunc);
+
+t = timer;
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
+"Time for truncated polynomial: ", timer - t;
+
+reduce(lTrunc[1], groebner(lOrig[1]));   // Same output
+reduce(lOrig[1], groebner(lTrunc[1]));   // Same output
+
+////////////////////////////////////////////////////////////////////////
+// For comparing timings, we truncate the x powers at the determinacy
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+g = subst(g,x, x+y);
+
+// Original polynomial without truncations
+g = monic(g);
+int t = timer;
+list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
+"Time for original polynomial: ", timer - t;
+
+// Truncated polynomial
+execute(s);
+g = subst(g,x, x+y);
+poly gTrunc = reduce(g, groebner(x20));
+gTrunc = monic(gTrunc);
+
+t = timer;
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
+"Time for truncated polynomial: ", timer - t;
+
+size(reduce(lTrunc[1], groebner(lOrig[1])));   // Same output
+size(reduce(lOrig[1], groebner(lTrunc[1])));   // Same output

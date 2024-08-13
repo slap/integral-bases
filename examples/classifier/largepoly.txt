@@ -1,0 +1,37 @@
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+g = subst(g,x, x+y);
+g = monic(g);
+
+printlevel = 2;
+int t = timer;
+list l2 = integralBasis(g, 2, "atOrigin", "opti1");
+timer - t;
+
+g = monic(g);
+
+
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+string s = "poly g = " + read("./examples/classifier/santiagoND.txt") + ";";
+execute(s);
+g = monic(g);
+
+printlevel = 2;
+int t = timer;
+list l2 = integralBasis(g, 2, "atOrigin", "opti1");
+timer - t;
+
+poly gTrunc = jet(g, 20);
+gTrunc = subst(gTrunc,x, x+y);
+gTrunc = monic(gTrunc);
+
+list l3 = integralBasis(gTrunc, 2, "atOrigin", "opti1");
+
+// Determinacy = 20
+// Delta invariant = 48
