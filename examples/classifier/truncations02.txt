@@ -1,33 +1,72 @@
-// 2024-08-13
+// 2024-08-14
 
 // cd C:/Users/Santiago/Documents/GitHub/integral-bases
 
 ////////////////////////////////////////////////////////////////////////
-// We check if we can truncate in the original polynomial all monomials of total degree higher than the delta invariant
+// We check if we can truncate first in x and then in y
+
+
+// We compute first the determinacy
+LIB "polyclass.lib";
+LIB "arnoldgit.lib";
+ring R=0,(x,y),ds;
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+poly gOrig = subst(g, x, x+y);
+determinacyBound(gOrig);
+
+
+printlevel = 5;
 
 LIB "integralbasis.lib";
 ring R=0,(x,y),dp;
 
+// Original polynomial
 string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
 execute(s);
-g = subst(g,x, x+y);
+
+// We apply a transformation to make it monic
+poly gOrig = subst(g, x, x+y);
 
 // Determinacy = 20
 // Delta invariant = 48
 
 // Original polynomial without truncations
-g = monic(g);
-list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
+gOrig = monic(gOrig);
+int t = timer;
+list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1");
+"Time for original polynomial: ", timer - t;
 
 // Truncated polynomial
-execute(s);
-g = subst(g,x, x+y);
-poly gTrunc = jet(g, 104);
-gTrunc = monic(gTrunc);
-list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
+poly gTrunc = g;
+//gTrunc = reduce(gTrunc, x21);
+gTrunc = subst(gTrunc, x, x+y);
+gTrunc = reduce(gTrunc, y21);
 
-reduce(lTrunc[1], groebner(lOrig[1]+g));   // Does not give the same output
-//reduce(lOrig[1], groebner(lTrunc[1]));   // Does not finish
+// We apply the same transformation to make it monic
+//gTrunc = subst(gTrunc, x, x+y);
+gTrunc = monic(gTrunc);
+
+// Integral basis for the truncated polynomial
+t = timer;
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
+"Time for truncated polynomial: ", timer - t;
+
+// To compare both outputs we change to a primer field
+ideal IOrig = lOrig[1];
+ideal ITrunc = lTrunc[1];
+//ITrunc = subst(ITrunc, x, x-y)
+//ITruncBack = changeDenom(ITrunc, x-y, x, gOrig);
+
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTrunc);
+ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+size(reduce(ITrunc, groebner(IOrig + gOrig)));   // Does not give the same output
+size(reduce(IOrig, groebner(ITrunc + gOrig)));   // Gives the same output
+
 
 ////////////////////////////////////////////////////////////////////////
 // We try now truncation only the x powers
@@ -155,7 +194,7 @@ determinacyBound(g);  // 28
 // Complicated example
 
 LIB "integralbasis.lib";
-ring R=0,(x,y),dp;
+ring R=0,(x,y),lp;
 string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
 execute(s);
 g = subst(g,x, x+y);
@@ -170,13 +209,19 @@ poly gTrunc = jet(g, d) + x^d;
 gTrunc = monic(gTrunc);
 list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
 
+// Computation of j
+int dd = 100;
+reduce(y^dd, groebner(lTrunc[1]));
+
+groebner(lTrunc[1] + g);
+
+reduce
 // Comparison
 //ideal maxJ = ideal(x,y)^d;
 size(reduce(lTrunc[1], groebner(lOrig[1] + g + ideal(x^d))));   // Same output if we use gTrunc but not if we use g
 size(reduce(lOrig[1], groebner(lTrunc[1] + g)));   // Same output
 
 // Why so slow...
-ideal maxJ = ideal(x,y)^d;
 groebner(maxJ + lOrig[1] + g);
 
 ideal I1 = groebner(lOrig[1] + g);
@@ -189,3 +234,29 @@ ring R=0,(x,y),ds;
 poly g = (y4+3x3y + x4)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
 determinacyBound(g);  // 28
 
+
+
+
+// We compute expansions in terms of x instead of y
+
+///////
+// Good example for truncating the powers of y!!
+///////
+
+printlevel = 2;
+LIB "integralbasis.lib";
+ring R=0,(y,x),dp;
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+poly gTrunc = reduce(g, groebner(y20));
+gTrunc = subst(gTrunc,y, x+y);
+
+// Original polynomial without truncations
+gTrunc = monic(gTrunc);
+list lOrig = integralBasis(gTrunc, 2, "atOrigin", "opti1");
+
+// Truncated polynomial
+int d = 38;
+poly gTrunc = jet(g, d) + x^d;
+gTrunc = monic(gTrunc);
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
