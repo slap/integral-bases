@@ -7,14 +7,18 @@
 
 
 // We compute first the determinacy
+// Determinacy = 20
+// Delta invariant = 48
+
 LIB "polyclass.lib";
 LIB "arnoldgit.lib";
 ring R=0,(x,y),ds;
 string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
 execute(s);
 poly gOrig = subst(g, x, x+y);
-determinacyBound(gOrig);
+determinacyBound(gOrig);  // 20
 
+// We truncate up to the determinacy
 
 printlevel = 5;
 
@@ -28,10 +32,7 @@ execute(s);
 // We apply a transformation to make it monic
 poly gOrig = subst(g, x, x+y);
 
-// Determinacy = 20
-// Delta invariant = 48
-
-// Original polynomial without truncations
+// Integral basis of the original polynomial without truncations
 gOrig = monic(gOrig);
 int t = timer;
 list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1");
@@ -39,12 +40,11 @@ list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1");
 
 // Truncated polynomial
 poly gTrunc = g;
-//gTrunc = reduce(gTrunc, x21);
-gTrunc = subst(gTrunc, x, x+y);
+gTrunc = reduce(gTrunc, x21);
 gTrunc = reduce(gTrunc, y21);
 
 // We apply the same transformation to make it monic
-//gTrunc = subst(gTrunc, x, x+y);
+gTrunc = subst(gTrunc, x, x+y);
 gTrunc = monic(gTrunc);
 
 // Integral basis for the truncated polynomial
@@ -68,195 +68,3 @@ size(reduce(ITrunc, groebner(IOrig + gOrig)));   // Does not give the same outpu
 size(reduce(IOrig, groebner(ITrunc + gOrig)));   // Gives the same output
 
 
-////////////////////////////////////////////////////////////////////////
-// We try now truncation only the x powers
-// We truncate at degree 14. The integrality exponent 11, but if we reduce modulo x12, the polynomial becomes reducible.
-
-LIB "integralbasis.lib";
-ring R=0,(x,y),dp;
-
-string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
-execute(s);
-g = subst(g,x, x+y);
-
-// Original polynomial without truncations
-g = monic(g);
-int t = timer;
-list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
-"Time for original polynomial: ", timer - t;
-
-// Truncated polynomial
-execute(s);
-g = subst(g,x, x+y);
-poly gTrunc = reduce(g, groebner(x14));
-gTrunc = monic(gTrunc);
-
-t = timer;
-list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
-"Time for truncated polynomial: ", timer - t;
-
-reduce(lTrunc[1], groebner(lOrig[1]));   // Same output
-reduce(lOrig[1], groebner(lTrunc[1]));   // Same output
-
-////////////////////////////////////////////////////////////////////////
-// For comparing timings, we truncate the x powers at the determinacy
-
-LIB "integralbasis.lib";
-ring R=0,(x,y),dp;
-
-string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
-execute(s);
-g = subst(g,x, x+y);
-
-// Original polynomial without truncations
-g = monic(g);
-int t = timer;
-list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
-"Time for original polynomial: ", timer - t;
-
-// Truncated polynomial
-execute(s);
-g = subst(g,x, x+y);
-poly gTrunc = reduce(g, groebner(x20));
-gTrunc = monic(gTrunc);
-
-t = timer;
-list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
-"Time for truncated polynomial: ", timer - t;
-
-size(reduce(lTrunc[1], groebner(lOrig[1])));   // Same output
-size(reduce(lOrig[1], groebner(lTrunc[1])));   // Same output
-
-////////////////////////////////////////////////////////////////////////
-// For comparing timings, we truncate the x powers at the delta invariant
-
-LIB "integralbasis.lib";
-ring R=0,(x,y),dp;
-
-string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
-execute(s);
-g = subst(g,x, x+y);
-
-// Original polynomial without truncations
-g = monic(g);
-int t = timer;
-list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
-"Time for original polynomial: ", timer - t;
-
-// Truncated polynomial
-execute(s);
-g = subst(g,x, x+y);
-poly gTrunc = reduce(g, groebner(x48));
-gTrunc = monic(gTrunc);
-
-t = timer;
-list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
-"Time for truncated polynomial: ", timer - t;
-
-size(reduce(lTrunc[1], groebner(lOrig[1])));   // Same output
-size(reduce(lOrig[1], groebner(lTrunc[1])));   // Same output
-
-////////////////////////////////////////////////////////////////////////
-// We go back to the problem of computing the truncation order
-// when we truncate powers of x and y.
-
-// Simple example
-
-LIB "integralbasis.lib";
-ring R=0,(x,y),dp;
-poly g = (y4+3x3y + x4)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
-
-// Original polynomial without truncations
-g = monic(g);
-list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
-
-// Truncated polynomial
-int d = 28;
-poly gTrunc = jet(g, d) + x^d;
-gTrunc = monic(gTrunc);
-list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
-
-// Comparison
-size(reduce(lTrunc[1], groebner(lOrig[1] + gTrunc)));   // Same output if we use gTrunc but not if we use g
-size(reduce(lOrig[1], groebner(lTrunc[1] + g)));   // Same output
-
-
-// Determinacy
-LIB "polyclass.lib";
-LIB "arnoldgit.lib";
-ring R=0,(x,y),ds;
-poly g = (y4+3x3y + x4)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
-determinacyBound(g);  // 28
-
-
-
-
-// Complicated example
-
-LIB "integralbasis.lib";
-ring R=0,(x,y),lp;
-string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
-execute(s);
-g = subst(g,x, x+y);
-
-// Original polynomial without truncations
-g = monic(g);
-list lOrig = integralBasis(g, 2, "atOrigin", "opti1");
-
-// Truncated polynomial
-int d = 38;
-poly gTrunc = jet(g, d) + x^d;
-gTrunc = monic(gTrunc);
-list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
-
-// Computation of j
-int dd = 100;
-reduce(y^dd, groebner(lTrunc[1]));
-
-groebner(lTrunc[1] + g);
-
-reduce
-// Comparison
-//ideal maxJ = ideal(x,y)^d;
-size(reduce(lTrunc[1], groebner(lOrig[1] + g + ideal(x^d))));   // Same output if we use gTrunc but not if we use g
-size(reduce(lOrig[1], groebner(lTrunc[1] + g)));   // Same output
-
-// Why so slow...
-groebner(maxJ + lOrig[1] + g);
-
-ideal I1 = groebner(lOrig[1] + g);
-ideal I2 = groebner(I1 + maxJ);
-
-// Determinacy
-LIB "polyclass.lib";
-LIB "arnoldgit.lib";
-ring R=0,(x,y),ds;
-poly g = (y4+3x3y + x4)*(y5+7x3)*(y3-4x2)*(y3+x2)*(y2-x3)+y30;
-determinacyBound(g);  // 28
-
-
-
-
-// We compute expansions in terms of x instead of y
-
-///////
-// Good example for truncating the powers of y!!
-///////
-
-printlevel = 2;
-LIB "integralbasis.lib";
-ring R=0,(y,x),dp;
-string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
-execute(s);
-poly gTrunc = reduce(g, groebner(y20));
-gTrunc = subst(gTrunc,y, x+y);
-
-// Original polynomial without truncations
-gTrunc = monic(gTrunc);
-list lOrig = integralBasis(gTrunc, 2, "atOrigin", "opti1");
-
-// Truncated polynomial
-int d = 38;
-poly gTrunc = jet(g, d) + x^d;
-gTrunc = monic(gTrunc);
-list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
