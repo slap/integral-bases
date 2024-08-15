@@ -30,6 +30,7 @@ string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
 execute(s);
 
 // We apply a transformation to make it monic
+// We work with this polynomial
 poly gOrig = subst(g, x, x+y);
 
 // Integral basis of the original polynomial without truncations
@@ -55,8 +56,6 @@ list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1");
 // To compare both outputs we change to a primer field
 ideal IOrig = lOrig[1];
 ideal ITrunc = lTrunc[1];
-//ITrunc = subst(ITrunc, x, x-y)
-//ITruncBack = changeDenom(ITrunc, x-y, x, gOrig);
 
 
 ring S=32003,(x,y),dp;
@@ -66,5 +65,88 @@ ideal IOrig = fetch(R, IOrig);
 ideal ITrunc = fetch(R, ITrunc);
 size(reduce(ITrunc, groebner(IOrig + gOrig)));   // Does not give the same output
 size(reduce(IOrig, groebner(ITrunc + gOrig)));   // Gives the same output
+
+// Just to check
+size(reduce(ITrunc, groebner(IOrig + gTrunc)));   // This gives the same output
+
+////////////////////////////////////////////////////////////////////////
+// We check if we can truncate first in x and then in y
+// We try changing the denominator
+
+// We compute first the determinacy
+// Determinacy = 20
+// Delta invariant = 48
+
+LIB "polyclass.lib";
+LIB "arnoldgit.lib";
+ring R=0,(x,y),ds;
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+poly gOrig = subst(g, x, x+y);
+determinacyBound(gOrig);  // 20
+
+// We truncate up to the determinacy
+
+printlevel = 5;
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+// Original polynomial
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+
+// We apply a transformation to make it monic
+poly gOrig = subst(g, x, x+y);
+
+// Integral basis of the original polynomial without truncations
+gOrig = monic(gOrig);
+int t = timer;
+
+// Check redifinid divideBy! 
+list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1");
+"Time for original polynomial: ", timer - t;
+
+// Truncated polynomial
+poly gTrunc = gOrig;
+poly gTrunc1 = reduce(gTrunc, x21);
+poly gTrunc2 = reduce(gTrunc1, y21);
+
+// We apply the same transformation to make it monic
+poly gTrunc3 = subst(gTrunc2, x, x+y);
+gTrunc3 = monic(gTrunc3);
+
+// Integral basis for the truncated polynomial
+t = timer;
+list lTrunc = integralBasis(gTrunc3, 2, "atOrigin", "opti1");
+"Time for truncated polynomial: ", timer - t;
+
+// To compare both outputs we change to a prime field
+ideal IOrig = lOrig[1];
+ideal ITrunc = lTrunc[1];
+
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc1 = fetch(R, gTrunc1);
+poly gTrunc2 = fetch(R, gTrunc2);
+ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+
+size(reduce(ITrunc, groebner(IOrig + gOrig)));   // Does not give the same output
+size(reduce(IOrig, groebner(ITrunc + gOrig)));   // Does not give the same output
+
+size(reduce(ITrunc, groebner(IOrig + gTrunc1)));   // Does not give the same output
+size(reduce(IOrig, groebner(ITrunc + gTrunc1)));   // Does not give the same output
+
+size(reduce(ITrunc, groebner(IOrig + gTrunc2)));   // Does not give the same output
+size(reduce(IOrig, groebner(ITrunc + gTrunc2)));   // Does not give the same output
+
+// We undo the last transformation
+//ideal ITruncBack = changeDenominator(ITrunc, (x)^11, (x+y)^11, gTrunc);
+//ITruncBack = subst(ITruncBack, x, x-y);
+
+//size(reduce(ITruncBack, groebner(IOrig + gTrunc)));   // Does not give the same output
+//size(reduce(IOrig, groebner(ITruncBack + gTrunc)));   // Gives the same output
 
 
