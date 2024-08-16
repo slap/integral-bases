@@ -104,7 +104,7 @@ list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1", "locBasis");
 "Time for original polynomial: ", timer - t;
 
 int xDegTrunc = 21;
-int yDegTrunc = 21;
+int yDegTrunc = 13;
 
 poly gTrunc = gOrig;
 gTrunc = reduce(gTrunc, x^xDegTrunc);
