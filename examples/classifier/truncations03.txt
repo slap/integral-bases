@@ -73,18 +73,12 @@ size(reduce(ITrunc, groebner(IOrig + gTrunc)));   // This gives the same output
 
 
 
-
-
-
-
-
-
-
 ///////////////////////////////////////
-// We compute the ib with respect to x
-// And then change denominator
-
-// This approach does not work
+// Experiment 2
+//
+// We check:
+// 1) Make it monic by dividing by the coefficient
+// 2) Put it into y-basis shape modulo gTrunc   --> Nothing to do... :(
 
 printlevel = 5;
 
@@ -105,21 +99,21 @@ int t = timer;
 list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1");
 "Time for original polynomial: ", timer - t;
 
-int dCut = 15;
+int dCut = 20;
 
 poly gTrunc = gOrig;
-gTrunc = reduce(gTrunc, x^dCut);
-gTrunc = reduce(gTrunc, y^dCut);
+poly gTruncX = reduce(gTrunc, x^dCut);
+poly gTruncY = reduce(gTruncX, y^dCut);
 
-matrix M = coef(gTrunc, x);
+matrix M = coef(gTruncY, y);
 poly lc = M[2,1];
 
-poly inv = powerInverse(lc, dCut, y);
+poly inv = powerInverse(lc, dCut, x);
 
-gTrunc = gTrunc * inv;
-gTrunc = reduce(gTrunc, y^dCut);
+gTruncY = gTruncY * inv;
+gTruncY = reduce(gTruncY, x^dCut);
 
-"The leading coefficient is: ", coef(gTrunc, x)[2,1];
+"The leading coefficient is: ", coef(gTruncY, y)[2,1];
 
 
 // The leading coefficient is now 1.
@@ -127,7 +121,7 @@ gTrunc = reduce(gTrunc, y^dCut);
 
 // Integral basis for the truncated polynomial
 int t = timer;
-list lTrunc = integralBasis(gTrunc, 1, "atOrigin", "opti1");
+list lTrunc = integralBasis(gTruncY, 2, "atOrigin", "opti1");
 "Time for truncated polynomial: ", timer - t;
 
 
@@ -138,15 +132,181 @@ ideal ITrunc = lTrunc[1];
 ring S=32003,(x,y),dp;
 poly gOrig = fetch(R, gOrig);
 poly gTrunc = fetch(R, gTrunc);
+poly gTruncX = fetch(R, gTruncX);
+poly gTruncY = fetch(R, gTruncY);
 ideal IOrig = fetch(R, IOrig);
 ideal ITrunc = fetch(R, ITrunc);
-
-// We change the denominator to x11 (modulo gTrunc)
-ideal ITruncX = changeDenominator(ITrunc, (y)^11, (x)^11, gTrunc);
-//ITruncBack = subst(ITruncBack, x, x-y);
 
 size(reduce(ITrunc, groebner(IOrig + gOrig)));   // Does not give the same output
 size(reduce(IOrig, groebner(ITrunc + gOrig)));   // Gives the same output
 
 // Just to check
 size(reduce(ITrunc, groebner(IOrig + gTrunc)));   // This gives the same output
+size(reduce(IOrig, groebner(ITrunc + gTrunc)));   // This does not give the same output
+
+// Just to check
+size(reduce(ITrunc, groebner(IOrig + gTruncX)));   // This gives the same output
+size(reduce(IOrig, groebner(ITrunc + gTruncX)));   // This does not give the same output
+
+// Just to check
+size(reduce(ITrunc, groebner(IOrig + gTruncY + gOrig)));   // This gives the same output
+size(reduce(IOrig, groebner(ITrunc + gTruncY + gOrig)));   // This does not give the same output
+
+size(reduce(IOrig, groebner(ITrunc)));   // Gives the same output
+
+///////////////////////////////////////
+// Experiment 3
+//
+// We check:
+// 1) Compute an IB in terms of X (make it monic by dividing by the coefficient)
+// 2) Put it back into x-basis changing the denominator
+// 3) Compare
+// This works!
+
+printlevel = 5;
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+// Original polynomial
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+
+// We apply a transformation to make it monic
+// We work with this polynomial
+poly gOrig = subst(g, x, x+y);
+
+// Integral basis of the original polynomial without truncations
+gOrig = monic(gOrig);
+int t = timer;
+list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1");
+"Time for original polynomial: ", timer - t;
+
+int dCut = 20;
+
+poly gTrunc = gOrig;
+poly gTruncY = reduce(gTrunc, y^dCut);
+
+matrix M = coef(gTruncY, x);
+poly lc = M[2,1];
+
+poly inv = powerInverse(lc, dCut, y);
+
+gTruncY = gTruncY * inv;
+gTruncY = reduce(gTruncY, y^dCut);
+
+"The leading coefficient is: ", coef(gTruncY, x)[2,1];
+
+
+// The leading coefficient is now 1.
+// We can compute the Y-integral basis.
+
+// Integral basis for the truncated polynomial
+int t = timer;
+list lTrunc = integralBasis(gTruncY, 1, "atOrigin", "opti1");
+"Time for truncated polynomial: ", timer - t;
+
+
+// To compare both outputs we change to a primer field
+ideal IOrig = lOrig[1];
+//ideal ITrunc = lTrunc[1] * lc;  // Agregamos de nuevo la unidad
+ideal ITrunc = lTrunc[1];  // Agregamos de nuevo la unidad
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTrunc);
+poly gTruncY = fetch(R, gTruncY);
+ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+
+// We change the denominator to x11 (modulo gTrunc)
+ideal ITruncX = changeDenominator(ITrunc, (y)^11, (x)^11, gOrig);
+
+
+size(reduce(ITruncX, groebner(IOrig + gOrig)));   // Same output
+size(reduce(IOrig, groebner(ITruncX + gOrig)));   // Same output
+
+// Just to check
+size(reduce(ITruncX, groebner(IOrig + gTruncY)));   // Same output
+size(reduce(IOrig, groebner(ITruncX + gTruncY)));   // Same output
+
+
+///////////////////////////////////////
+// Experiment 4
+//
+// Same as 3 but we add the truncation in X
+
+printlevel = 5;
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+// Original polynomial
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+
+// We apply a transformation to make it monic
+// We work with this polynomial
+poly gOrig = subst(g, x, x+y);
+
+// Integral basis of the original polynomial without truncations
+gOrig = monic(gOrig);
+int t = timer;
+list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1");
+"Time for original polynomial: ", timer - t;
+
+int dCut = 20;
+
+poly gTrunc = gOrig;
+poly gTruncX = reduce(gTrunc, x^dCut);
+poly gTruncY = reduce(gTruncX, y^dCut);
+
+matrix M = coef(gTruncY, x);
+poly lc = M[2,1];
+
+poly inv = powerInverse(lc, dCut, y);
+
+gTruncY = gTruncY * inv;
+gTruncY = reduce(gTruncY, y^dCut);
+
+"The leading coefficient is: ", coef(gTruncY, x)[2,1];
+
+
+// The leading coefficient is now 1.
+// We can compute the Y-integral basis.
+
+// Integral basis for the truncated polynomial
+int t = timer;
+list lTrunc = integralBasis(gTruncY, 1, "atOrigin", "opti1");
+"Time for truncated polynomial: ", timer - t;
+
+
+// To compare both outputs we change to a primer field
+ideal IOrig = lOrig[1];
+//ideal ITrunc = lTrunc[1] * lc;  // Agregamos de nuevo la unidad
+ideal ITrunc = lTrunc[1];  // Agregamos de nuevo la unidad
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTrunc);
+poly gTruncX = fetch(R, gTruncX);
+poly gTruncY = fetch(R, gTruncY);
+ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+
+// We change the denominator to x11 (modulo gTrunc)
+ideal ITruncX = changeDenominator(ITrunc, (y)^11, (x)^11, gTruncY);
+
+
+size(reduce(ITruncX, groebner(IOrig + gOrig)));   // Does not give the same output
+size(reduce(IOrig, groebner(ITruncX + gOrig)));   // Gives the same output
+
+// Just to check
+size(reduce(ITruncX, groebner(IOrig + gTruncX)));   // This gives the same output
+size(reduce(IOrig, groebner(ITruncX + gTruncX)));   // This does not give the same output
+
+// Just to check
+size(reduce(ITruncX, groebner(IOrig + gTruncY)));   // This gives the same output
+size(reduce(IOrig, groebner(ITruncX + gTruncY)));   // This does not give the same output
+
+

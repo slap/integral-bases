@@ -1,0 +1,199 @@
+// 2024-08-15
+
+// cd C:/Users/Santiago/Documents/GitHub/integral-bases
+
+
+// We check if we can truncate in x and  y.
+// In this file we compare only the localizations at the origin
+
+////////////////////////////////////////////////////////////////////////
+// Example 1
+//
+// We make it monic by multiplying by the inverse of the leading coefficient
+//
+
+// We compute first the determinacy
+// Determinacy = 20
+// Delta invariant = 48
+
+
+printlevel = 5;
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+// Original polynomial
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+
+// We apply a transformation to make it monic
+// We work with this polynomial
+poly gOrig = subst(g, x, x+y);
+
+// Integral basis of the original polynomial without truncations
+gOrig = monic(gOrig);
+int t = timer;
+list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1", "locBasis");
+"Time for original polynomial: ", timer - t;
+
+int xDegTrunc = 15;
+int yDegTrunc = 15;
+
+poly gTrunc = gOrig;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+gTrunc = reduce(gTrunc, y^yDegTrunc);
+
+// To make it monic again we multiply by the inverse of the leading coefficient
+matrix M = coef(gTrunc, y);
+poly lc = M[2,1];
+poly inv = powerInverse(lc, xDegTrunc, x);
+gTrunc = gTrunc * inv;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+"The leading coefficient is: ", coef(gTrunc, y)[2,1];
+
+// The leading coefficient is now 1.
+// We can compute the Y-integral basis.
+
+// Integral basis for the truncated polynomial
+int t = timer;
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1", "locBasis");
+"Time for truncated polynomial: ", timer - t;
+
+// To compare both outputs we change to a primer field
+ideal IOrig = lOrig[1];
+ideal ITrunc = lTrunc[1];
+
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTrunc);
+ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+size(reduce(ITrunc, groebner(IOrig + gOrig)));   // Same output! 
+size(reduce(IOrig, groebner(ITrunc + gOrig)));   // Same output!
+
+
+////////////////////////////////////////////////////////////////////////
+// Example 2
+//
+// We make it monic by adding a power of y
+//
+
+// We compute first the determinacy
+// Determinacy = 20
+// Delta invariant = 48
+
+
+printlevel = 5;
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+// Original polynomial
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+
+// We apply a transformation to make it monic
+// We work with this polynomial
+poly gOrig = subst(g, x, x+y);
+
+// Integral basis of the original polynomial without truncations
+gOrig = monic(gOrig);
+int t = timer;
+list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1", "locBasis");
+"Time for original polynomial: ", timer - t;
+
+int xDegTrunc = 21;
+int yDegTrunc = 21;
+
+poly gTrunc = gOrig;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+gTrunc = reduce(gTrunc, y^yDegTrunc);
+gTrunc = gTrunc + y^(yDegTrunc + 1);
+"The leading coefficient is: ", coef(gTrunc, y)[2,1];
+
+// The leading coefficient is now 1.
+// We can compute the Y-integral basis.
+
+// Integral basis for the truncated polynomial
+int t = timer;
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1", "locBasis");
+"Time for truncated polynomial: ", timer - t;
+
+// To compare both outputs we change to a primer field
+ideal IOrig = lOrig[1];
+ideal ITrunc = lTrunc[1];
+
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTrunc);
+ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+size(reduce(ITrunc, groebner(IOrig + gOrig)));   // Same output! 
+size(reduce(IOrig, groebner(ITrunc + gOrig)));   // Same output!
+
+
+////////////////////////////////////////////////////////////////////////
+// Example 3
+//
+// We make it monic by doing the linear change of variables after the truncation
+//
+
+// We compute first the determinacy
+// Determinacy = 20
+// Delta invariant = 48
+
+
+printlevel = 5;
+
+LIB "integralbasis.lib";
+ring R=0,(x,y),dp;
+
+// Original polynomial
+string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+execute(s);
+
+// We apply a transformation to make it monic
+// We work with this polynomial
+poly gOrig = subst(g, x, x+y);
+
+// Integral basis of the original polynomial without truncations
+gOrig = monic(gOrig);
+int t = timer;
+list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1", "locBasis");
+"Time for original polynomial: ", timer - t;
+
+int xDegTrunc = 21;
+int yDegTrunc = 21;
+
+poly gTrunc = g;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+gTrunc = reduce(gTrunc, y^yDegTrunc);
+gTrunc = subst(gTrunc, x, x+y);
+gTrunc = monic(gTrunc);
+
+"The leading coefficient is: ", coef(gTrunc, y)[2,1];
+
+// The leading coefficient is now 1.
+// We can compute the Y-integral basis.
+
+// Integral basis for the truncated polynomial
+int t = timer;
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1", "locBasis");
+"Time for truncated polynomial: ", timer - t;
+
+// To compare both outputs we change to a primer field
+ideal IOrig = lOrig[1];
+ideal ITrunc = lTrunc[1];
+
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTrunc);
+ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+size(reduce(ITrunc, groebner(IOrig + gOrig)));   // Same output! 
+size(reduce(IOrig, groebner(ITrunc + gOrig)));   // Same output!
+
+

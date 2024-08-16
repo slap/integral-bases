@@ -5,11 +5,19 @@
 ////////////////////////////////////////////////////////////////////////
 // We check if we can truncate first in x and then in y
 
+// We use the example santiagoND.txt
+// This is already truncated, we apply some coordinate change to add higher degree terms
 
 // We compute first the determinacy
 // Determinacy = 20
-// Delta invariant = 48
 
+LIB "polyclass.lib";
+LIB "arnoldgit.lib";
+ring R=0,(x,y),ds;
+string s = "poly g = " + read("./examples/classifier/santiagoND.txt") + ";";
+execute(s);
+poly gOrig = subst(g, x, x+y);
+determinacyBound(gOrig);  // 20
 
 printlevel = 5;
 
@@ -17,21 +25,20 @@ LIB "integralbasis.lib";
 ring R=0,(x,y),dp;
 
 // Original polynomial
-string s = "poly g = " + read("./examples/classifier/santiago2.txt") + ";";
+string s = "poly g = " + read("./examples/classifier/santiagoND.txt") + ";";
 execute(s);
 
-// We apply a transformation to make it monic
-// We work with this polynomial
-poly gOrig = subst(g, x, x+y);
+g = subst(g, x, x + xy + x2 + y3);
+g = monic(g);
 
 // Integral basis of the original polynomial without truncations
-gOrig = monic(gOrig);
+poly gOrig = g;
 int t = timer;
 list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1");
 "Time for original polynomial: ", timer - t;
 
 int xDegTrunc = 20;
-int yDegTrunc = 104;
+int yDegTrunc = 59;
 
 poly gTrunc = gOrig;
 gTrunc = reduce(gTrunc, x^xDegTrunc);
