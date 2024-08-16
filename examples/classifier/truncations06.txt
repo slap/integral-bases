@@ -1,0 +1,201 @@
+// We look for examples of these two kind:
+
+1) where the truncation in y reduces the computation time
+2) where the integrality exponent in x and y are different, to check the bound on the determinacy.
+
+
+LIB "polyclass.lib";
+LIB "arnoldgit.lib";
+ring R=0,(x,y),ds;
+poly g = (y11 - x2)*(y13-x3)+y25 + x25;
+map phi = R,x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^100, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^123;
+poly gOrig = phi(g);
+gOrig = substitute(gOrig, x, x+y);
+//gOrig = monic(gOrig);  
+determinacyBound(gOrig);  // 35
+
+
+// Very slow
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = (y11 - x2)*(y13-x3)+y25 + x25;
+
+map phi = R,x+y^2+x^2+x*y+x^2*y+x*y^3-x^6*y^100, y+y^2+2*x^2+x*y+y*x^2+y^2*x+x*y^4+x^2*y^123;
+poly gOrig = phi(g);
+gOrig = substitute(gOrig, x, x+y);
+gOrig = monic(gOrig);  
+
+//int t = timer;
+//list lOrigY = integralBasis(gOrig, 2, "atOrigin", "opti1", "locBasis");
+//"Time for original polynomial Y-basis: ", timer - t;
+
+//int t = timer;
+//list lOrigX = integralBasis(gOrig, 1, "atOrigin", "opti1", "locBasis");
+//"Time for original polynomial X-basis: ", timer - t;
+
+
+int xDegTrunc = 35;
+int yDegTrunc = 35;
+
+poly gTrunc = gOrig;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+gTrunc = reduce(gTrunc, y^yDegTrunc);
+gTrunc = gTrunc + y^(yDegTrunc + 1) + x^(xDegTrunc + 1);
+//"The leading coefficient is: ", coef(gTrunc, y)[2,1];
+
+// The leading coefficient is now 1.
+// We can compute the Y-integral basis.
+
+// Integral basis for the truncated polynomial
+int t = timer;
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1", "locBasis");
+"Time for truncated polynomial: ", timer - t;
+
+// To compare both outputs we change to a primer field
+//ideal IOrig = lOrigY[1];
+ideal ITrunc = lTrunc[1];
+
+
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTrunc);
+//ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+
+int j = 18;
+ideal imax = ideal(x,y)^j;
+reduce(imax, groebner(ITrunc));
+
+
+
+size(reduce(ITrunc, groebner(IOrig + gOrig)));  
+size(reduce(IOrig, groebner(ITrunc + gOrig))); 
+
+
+// Medium slow
+// Doesnt finish after 30 sec
+
+printlevel = 3;
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = (y11 - x2)*(y13-x3)+y25 + x25;
+
+map phi = R,x+y^2-y^8, y+y^2+x^2*y^5;
+poly gOrig = phi(g);
+gOrig = substitute(gOrig, x, x+y);
+gOrig = monic(gOrig);  
+
+int t = timer;
+list lOrigY = integralBasis(gOrig, 2, "atOrigin", "opti1", "locBasis");
+"Time for original polynomial Y-basis: ", timer - t;
+
+//int t = timer;
+//list lOrigX = integralBasis(gOrig, 1, "atOrigin", "opti1", "locBasis");
+//"Time for original polynomial X-basis: ", timer - t;
+
+
+int xDegTrunc = 35;
+int yDegTrunc = 35;
+
+poly gTrunc = gOrig;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+gTrunc = reduce(gTrunc, y^yDegTrunc);
+gTrunc = gTrunc + y^(yDegTrunc + 1) + x^(xDegTrunc + 1);
+//"The leading coefficient is: ", coef(gTrunc, y)[2,1];
+
+// The leading coefficient is now 1.
+// We can compute the Y-integral basis.
+
+// Integral basis for the truncated polynomial
+int t = timer;
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1", "locBasis");
+"Time for truncated polynomial: ", timer - t;
+
+// To compare both outputs we change to a primer field
+ideal IOrigY = lOrigY[1];
+ideal ITrunc = lTrunc[1];
+
+
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTrunc);
+ideal IOrig = fetch(R, IOrigY);
+ideal ITrunc = fetch(R, ITrunc);
+
+int j = 18;
+ideal imax = ideal(x,y)^j;
+reduce(imax, groebner(ITrunc));
+
+
+
+size(reduce(ITrunc, groebner(IOrig + gOrig)));  
+size(reduce(IOrig, groebner(ITrunc + gOrig))); 
+
+
+
+
+
+
+
+// Quite fast
+// Time for original polynomial Y-basis:  17
+// Time for truncated polynomial:  0
+
+printlevel = 3;
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = (y11 - x2)*(y13-x3)+y25 + x25;
+
+map phi = R,x+y^2-y^6, y+y^2+y^6;
+poly gOrig = phi(g);
+gOrig = substitute(gOrig, x, x+y);
+gOrig = monic(gOrig);  
+
+int t = timer;
+list lOrigY = integralBasis(gOrig, 2, "atOrigin", "opti1", "locBasis");
+"Time for original polynomial Y-basis: ", timer - t;
+
+//int t = timer;
+//list lOrigX = integralBasis(gOrig, 1, "atOrigin", "opti1", "locBasis");
+//"Time for original polynomial X-basis: ", timer - t;
+
+
+int xDegTrunc = 35;
+int yDegTrunc = 35;
+
+poly gTrunc = gOrig;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+gTrunc = reduce(gTrunc, y^yDegTrunc);
+gTrunc = gTrunc + y^(yDegTrunc + 1) + x^(xDegTrunc + 1);
+//"The leading coefficient is: ", coef(gTrunc, y)[2,1];
+
+// The leading coefficient is now 1.
+// We can compute the Y-integral basis.
+
+// Integral basis for the truncated polynomial
+int t = timer;
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1", "locBasis");
+"Time for truncated polynomial: ", timer - t;
+
+// To compare both outputs we change to a primer field
+ideal IOrigY = lOrigY[1];
+ideal ITrunc = lTrunc[1];
+
+
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTrunc);
+ideal IOrig = fetch(R, IOrigY);
+ideal ITrunc = fetch(R, ITrunc);
+
+int j = 18;
+ideal imax = ideal(x,y)^j;
+reduce(imax, groebner(ITrunc));
+
+
+
+size(reduce(ITrunc, groebner(IOrig + gOrig)));  
+size(reduce(IOrig, groebner(ITrunc + gOrig))); 

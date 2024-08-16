@@ -1,0 +1,69 @@
+// We look for an example that is slow with Chinese remainder and even slower in Maple
+
+///////////////////////////////////////////////////////////////////////
+// Example 1
+// Merging is a little slow - 16s vs 45s
+
+printlevel = 2;
+LIB"integralbasis.lib";
+ring r = 0, (x,y), dp;
+poly f = (y90 + x4)*(y^7 + 2xy + x2)*(y5+7x3)*(y3+x2)*(y3-x2)*(y2-x3)+y130;
+int t = timer;
+list l1 = integralBasis(f,2, "atOrigin", "opti1");
+"Time using optimization algorithm:", timer - t;
+t = timer;
+list l2 = integralBasis(f,2, "atOrigin", "opti0");
+"Time using Chinese remainder algorithm:", timer - t;
+// Checks
+size(reduce(l1[1], groebner(l2[1])));
+size(reduce(l2[1], groebner(l1[1])));
+
+
+// Maple
+with(algcurves, integral_basis);
+memused := kernelopts(bytesused);
+memalloc := kernelopts(bytesalloc);
+theTime := time[real]();
+f := (y^90 + x^4)*(y^7 + 2*x*y + x^2)*(y^5+7*x^3)*(y^3+x^2)*(y^3-x^2)*(y^2-x^3)+y^130;
+intbas := integral_basis(f,x,y,{x});
+theTime := time[real]() - theTime;
+memused := kernelopts(bytesused) - memused;
+memalloc := kernelopts(bytesalloc) - memalloc;
+
+// Combinatorial: 16s
+// Chinese remainder: 45s (Time for merging bases:  30s)
+// Maple: 858s
+
+
+///////////////////////////////////////////////////////////////////////
+// Example 2
+// Merging is pretty slow - 1 vs 198
+
+printlevel = 2;
+LIB"integralbasis.lib";
+ring r = 0, (x,y), dp;
+poly f = (y4+ x4)*(y^7 + 2xy + x2)*(y5+7x3)*(y3+x2)*(y3-x2)*(y2-x3)+y30;
+int t = timer;
+list l1 = integralBasis(f,2, "atOrigin", "opti1");
+"Time using optimization algorithm:", timer - t;
+t = timer;
+list l2 = integralBasis(f,2, "atOrigin", "opti0");
+"Time using Chinese remainder algorithm:", timer - t;
+// Checks
+size(reduce(l1[1], groebner(l2[1])));
+size(reduce(l2[1], groebner(l1[1])));
+
+// Maple
+with(algcurves, integral_basis);
+memused := kernelopts(bytesused);
+memalloc := kernelopts(bytesalloc);
+theTime := time[real]();
+f := (y^4+ x^4)*(y^7 + 2*x*y + x^2)*(y^5+7*x^3)*(y^3+x^2)*(y^3-x^2)*(y^2-x^3)+y^30;
+intbas := integral_basis(f,x,y,{x});
+theTime := time[real]() - theTime;
+memused := kernelopts(bytesused) - memused;
+memalloc := kernelopts(bytesalloc) - memalloc;
+
+// Combinatorial: 1s
+// Chinese remainder: 307s (Time for merging bases:  306s)
+// Maple: 2s

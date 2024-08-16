@@ -460,7 +460,7 @@ static proc integralBasisMain(poly f, string strategy, string algorithm, int mod
   {
     list outp = normalGen, normalGen[1];
   }
-  debug_log_intbas(2, "----Time for merging: ", timer-ttt);
+  debug_log_intbas(10, "----Time for merging: ", timer-ttt);
   // Back to the original ring if needed
   if(newRing == 1)
   {
@@ -1527,7 +1527,8 @@ static proc ibAt0(poly f, int locBasis, int optimize)
       intBas[1] = bases[1][1];
       intBas[2] = bases[1][2];
     }
-    debug_log_intbas(3, "------Time for merging bases: ", timer - tt);
+    //debug_log_intbas(20, "------Time for merging bases: ", timer - tt);
+    "------Time for merging bases: ", timer - tt;
 
     
     // We add the unit outside the origin
