@@ -1,3 +1,9 @@
 with(algcurves);
 f := (y^15 + y^4*x + x^4) * (y^16 + y^4*x + x^4) * (y^17 + y^4*x + x^4) * (y^5 + y^4*x + x^4) * (y^5 + y^4*x + x^4) * (y^5 + y^4*x + x^4) * (y^7 + y^6*x^4 + y^4*x^3 + x^5) * (y^9 - x^3) * (y^3-x^2) * (y^4+y^3*x^2+x^3) + y^100;
 puiseux(expand(f),x=0,y,0);
+
+
+with(algcurves);
+f := (y^7-x^4)*(y^9-x^3)+y^17+x^17+x^18*y^18; 
+g := eval(f, {x = x+y});
+puiseux(expand(g),x=0,y,0);
