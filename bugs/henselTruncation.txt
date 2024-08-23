@@ -1,3 +1,6 @@
+cd C:/Users/Santiago/Documents/GitHub/Singular/Singular/LIB
+
+
 // If we apply Hensel lifting up to the integrality exponent we are losing information,
 // the Puiseux expansions cannot be recovered from the factors.
 
@@ -40,6 +43,14 @@ int xDegTrunc = 6;  // This is the minimum degree we can use for x-truncation
 poly gTrunc = gOrig;
 gTrunc = reduce(gTrunc, x^xDegTrunc);
 
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1", "locBasis");
+
+puiseuxList(gTrunc, -1, 1, 2);
+
+henselBlocks(gTrunc, 30, 0);
+
+
+// Here we need the factors developed up to degree 24, which is the sum of the x-degrees
 list l = puiseux(gTrunc, -1, 1);
 list classes = getClasses(l);
 list bF = buildFactors(classes);
@@ -47,3 +58,20 @@ list bF = buildFactors(classes);
 poly h2n = subst(h2, x, x2);
 re = p1 - h2n;
 
+poly f1 = x13+125x12+150x11+135x10+143x9+75x8y+87x8+60x7y+48x7+42x6y+28x6+42x5y+15x4y2+9x5+15x4y+6x3y2+3x4+6x3y+3x2y2+x3+3x2y+3xy2+y3;
+poly f2 = x11+196x10+140x9+81x8+48x7+42x6+28x5y+14x5+10x4y+5x4+4x3y+2x3+2x2y+x2+2xy+y2;
+poly h = f1*f2;
+
+
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = (y3 - x4)*(y3-x4 + x2y3)+y10;
+list l = puiseux(g, -1, 1);
+l;
+
+list classes = getClasses(l);
+list bF = buildFactors(classes);
+
+puiseuxList(g, 2, -1);
+
+list lTrunc = integralBasis(g, 2, "atOrigin", "opti1");

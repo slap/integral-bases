@@ -1,0 +1,75 @@
+list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1", "locBasis");
+
+
+printlevel = 5;
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = (y11 - x2)*(y13-x3)+y25 + x25;
+
+map phi = R,x+y^2-y^6, y+y^2+y^6;
+poly gOrig = phi(g);
+
+// Original polynomial (no truncation)
+gOrig = substitute(gOrig, x, x+y);
+gOrig = monic(gOrig);
+
+// Truncated polynomial
+int xDegTrunc = 35;  // This is the minimum degree we can use for x-truncation
+int yDegTrunc = 35;  // This is the minimum degree we can use
+poly gTrunc = gOrig;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+gTrunc = reduce(gTrunc, y^yDegTrunc);
+gTrunc = gTrunc + y^(yDegTrunc + 1);
+
+list blocksOrig = henselBlocks(gOrig, 19, 1); // We split up to degree 18, the integrality exponent.
+list blocksTrunc = henselBlocks(gTrunc, 19, 1);
+
+// We compare both results
+blocksTrunc[2] - blocksOrig[2];
+
+// 0
+
+// Truncated polynomial
+int xDegTrunc = 35;  // This is the minimum degree we can use for x-truncation
+int yDegTrunc = 35;  // This is the minimum degree we can use
+poly gTrunc = gOrig;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+gTrunc = reduce(gTrunc, y^yDegTrunc);
+gTrunc = gTrunc + y^(yDegTrunc + 1);
+
+list blocksOrig = henselBlocks(gOrig, 100, 1);
+list blocksTrunc = henselBlocks(gTrunc, 35, 1);
+list blocksTrunc2 = henselBlocks(gTrunc, 24, 1);
+
+// We compare both results
+blocksTrunc[2] - blocksOrig[2];
+
+// We compare both results
+blocksTrunc2[2] - blocksTrunc[2];
+
+list lTrunc = integralBasis(gTrunc, 2, "atOrigin", "opti1", "locBasis");
+
+// To compare both outputs we change to a primer field
+ideal IOrig = lOrig[1];
+ideal ITrunc = lTrunc[1];
+
+ring S=32423,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTrunc);
+ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+
+// We check if we obtain the same output
+size(reduce(ITrunc, groebner(IOrig + gOrig)));  
+size(reduce(IOrig, groebner(ITrunc + gOrig))); 
+
+reduce(ITrunc[3], groebner(IOrig + gOrig));
+setring R;
+
+ideal I = gTrunc;
+list outN = normal(I, "GLS");
+
+
+LIB"integralbasis.lib";
+list blocksTrunc = henselBlocks(gTrunc, 35, 1);
+list blocksTrunc2 = henselBlocks(gTrunc, 24, 1);
