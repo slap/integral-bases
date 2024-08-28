@@ -1,0 +1,141 @@
+cd C:/Users/Santiago/Documents/GitHub/Singular/Singular/LIB
+
+////////////////////////////////////////////////////////////////////////
+//
+// We study the truncation order for the Puiseux expansions and
+// for computing the integral basis
+//
+
+printlevel = 3;
+
+
+
+LIB "polyclass.lib";
+LIB "arnoldgit.lib";
+ring R=0,(x,y),ds;
+poly g = (y11 - x2)*(y13-x3)+y25 + x25;
+map phi = R,x+y^2-y^6, y+y^2+y^6;
+poly gOrig = phi(g);
+gOrig = substitute(gOrig, x, x+y);
+gOrig = monic(gOrig);  
+determinacyBound(gOrig);  // 35
+
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = (y11 - x2)*(y13-x3)+y25 + x25;
+
+map phi = R,x+y^2-y^6, y+y^2+y^6;
+poly gOrig = phi(g);
+gOrig = substitute(gOrig, x, x+y);
+gOrig = monic(gOrig);  
+puiseuxList(gOrig, -1, 1, 2);  // Same Puiseux expansions
+
+
+// We truncate all monomials of deg > 35 and compare the Puiseux expansions
+int xDegTrunc = 35;
+int yDegTrunc = 35;
+poly gTrunc = gOrig;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+gTrunc = reduce(gTrunc, y^yDegTrunc);
+puiseuxList(gTrunc, -1, 1, 2);  // Same Puiseux expansions
+
+// We truncate all monomials of deg > 35 and compare the Puiseux expansions
+int xDegTrunc = 6;
+int yDegTrunc = 35;
+poly gTrunc = gOrig;
+gTrunc = reduce(gTrunc, x^xDegTrunc);
+gTrunc = reduce(gTrunc, y^yDegTrunc);
+puiseuxList(gTrunc, -1, 1, 2);  // Same Puiseux expansions
+
+// We truncate all monomials of deg > 35 and compare the Puiseux expansions
+int totDegTrunc = 30;
+poly gTrunc = gOrig;
+gTrunc = jet(gTrunc, totDegTrunc + 1);
+puiseuxList(gTrunc, -1, 1, 2);  // Same Puiseux expansions
+
+////////////////////////////////////////////////////////////////////////
+// We now compare the integral basis
+// We truncate only in x
+
+// We use the new option to indicate the integrality exponent and
+// not compute it.
+////////////////////////////////////////////////////////////////////////
+
+printlevel = 3;
+
+LIB"integralbasis.lib";
+ring R = 0, (x,y), dp;
+poly g = (y11 - x2)*(y13-x3)+y25 + x25;
+map phi = R,x+y^2-y^6, y+y^2+y^6;
+poly gOrig = phi(g);
+gOrig = substitute(gOrig, x, x+y);
+gOrig = monic(gOrig);  
+
+// The integrality exponent is 18
+int intExp = 18;
+
+poly gTruncX = gOrig;
+gTruncX = reduce(gTruncX, x^(2*intExp));
+
+int t = timer;
+list lTruncXGlob18 = integralBasis(gTruncX, 2, "atOrigin", "opti1", list("intExp", 18));
+"Time for truncated polynomial glob basis: ", timer - t;
+
+int t = timer;
+list lTruncXGlob = integralBasis(gTruncX, 2, "atOrigin", "opti1");
+"Time for truncated polynomial glob basis: ", timer - t;
+
+// Integral basis for the original polynomial
+int t = timer;
+list lOrig = integralBasis(gOrig, 2, "atOrigin", "opti1");
+"Time for original polynomial: ", timer - t;
+
+
+// To compare both outputs we change to a prime field
+ideal IOrig = lTruncXGlob18[1];
+ideal ITrunc = lTruncXGlob[1];
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTruncX);
+ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+
+// We check if we obtain the same output
+size(reduce(ITrunc, groebner(IOrig + gOrig)));  
+size(reduce(IOrig, groebner(ITrunc + gOrig))); 
+
+setring R;
+
+
+
+// To compare both outputs we change to a prime field
+ideal IOrig = lOrig[1];
+ideal ITrunc = lTruncXGlob[1];
+
+ring S=32003,(x,y),dp;
+poly gOrig = fetch(R, gOrig);
+poly gTrunc = fetch(R, gTruncX);
+ideal IOrig = fetch(R, IOrig);
+ideal ITrunc = fetch(R, ITrunc);
+
+// We check if we obtain the same output
+size(reduce(ITrunc, groebner(IOrig + gOrig)));  
+size(reduce(IOrig, groebner(ITrunc + gOrig))); 
+
+setring R;
+
+// We verify if the unit is the same up to the integrality exponent
+
+intExp = 18;
+poly gTruncX = gOrig;
+gTruncX = reduce(gTruncX, groebner(x^(2*intExp)));
+
+list blocksOrig = henselBlocks(gOrig, 20, 1);
+list blocksTrunc = henselBlocks(gTruncX, 20, 1);
+
+coef(blocksOrig[1] - blocksTrunc[1], x);
+coef(blocksOrig[2] - blocksTrunc[2], x);
+coef(blocksOrig[3] - blocksTrunc[3], x);
+
+
